@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">MobileLearningApp</string>
+    <string name="app_name">Testor</string>
+    <string name="loginUsername">Username</string>
+    <string name="loginPassword">Password</string>
+    <string name="loginTitle">Mobile Learning Quizzes</string>
+    <string name="sign_in">Sign in</string>
+    <string name="authentication_dialog_text">Authenticating...</string>
 </resources>

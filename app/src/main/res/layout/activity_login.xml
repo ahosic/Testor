@@ -1,21 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_login"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/colorPrimary"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/loginAcitvity_paddingLeft"
+    android:paddingRight="@dimen/loginAcitvity_paddingRight"
+    android:paddingTop="@dimen/loginAcitvity_paddingTop"
+    android:theme="@style/Theme.AppCompat.Light.NoActionBar"
     tools:context="at.fhooe.mc.hosic.mobilelearningapp.LoginActivity">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/textView" />
-</RelativeLayout>
+        android:layout_marginBottom="32dp"
+        android:text="@string/loginTitle"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="@color/textDarkPrimary"
+        android:textSize="24sp" />
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        android:theme="@style/LoginItemTheme"
+        app:hintTextAppearance="@style/HintAppearanceDark">
+
+        <EditText
+            android:id="@+id/input_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/loginUsername"
+            android:inputType="text"
+            android:textColor="@color/textDarkPrimary"
+            android:textSize="34sp" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        android:theme="@style/LoginItemTheme"
+        app:hintTextAppearance="@style/HintAppearanceDark">
+
+        <EditText
+            android:id="@+id/input_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/loginPassword"
+            android:inputType="textPassword"
+            android:textColor="@color/textDarkPrimary"
+            android:textSize="34sp" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btn_login"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:background="@color/colorPrimaryDark"
+        android:onClick="signIn"
+        android:padding="16dp"
+        android:text="@string/sign_in"
+        android:textColor="@color/textDarkPrimary"
+        android:textSize="24sp" />
+
+</LinearLayout>
