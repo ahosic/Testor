@@ -1,23 +1,26 @@
 package at.fhooe.mc.hosic.mobilelearningapp;
 
-import android.app.ActionBar;
 import android.app.ProgressDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.Observable;
 import java.util.Observer;
 
-import at.fhooe.mc.hosic.mobilelearningapp.helpers.MessageType;
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.ModelChangedMessage;
 import at.fhooe.mc.hosic.mobilelearningapp.models.AuthenticationModel;
 import at.fhooe.mc.hosic.mobilelearningapp.models.Token;
+
+/**
+ * Manages the Login procedure.
+ *
+ * @author Almin Hosic
+ * @version 1.0
+ */
 
 public class LoginActivity extends AppCompatActivity implements Observer {
 

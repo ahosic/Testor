@@ -17,6 +17,13 @@ public class BaseModel extends Observable {
     protected final String LOGIN_URL = "https://fh-mlearning.moodlecloud.com/login/token.php";
     protected final String SERVICE_NAME = "create_category";
 
+    /**
+     * Extends a URL with encoded query parameters
+     *
+     * @param _url    URL
+     * @param _params Query parameters
+     * @return A URL extended with encoded query parameters
+     */
     protected String encodeURLWithParams(String _url, Map<String, String> _params) {
         StringBuilder builder = new StringBuilder(_url);
 
