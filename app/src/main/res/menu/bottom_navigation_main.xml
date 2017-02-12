@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_quizzes"
+        android:icon="@drawable/ic_school_black_24dp"
+        android:title="@string/text_quizzes"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_scores"
+        android:icon="@drawable/ic_trending_up_black_24dp"
+        android:title="@string/text_scores"
+        app:showAsAction="ifRoom" />
+
+</menu>

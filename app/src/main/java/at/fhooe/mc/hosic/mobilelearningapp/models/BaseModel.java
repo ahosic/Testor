@@ -13,9 +13,9 @@ import java.util.Observable;
  */
 
 public class BaseModel extends Observable {
-    protected final String BASE_URL = "https://fh-mlearning.moodlecloud.com/webservice/rest/";
+    protected final String BASE_URL = "https://fh-mlearning.moodlecloud.com/webservice/rest/server.php";
     protected final String LOGIN_URL = "https://fh-mlearning.moodlecloud.com/login/token.php";
-    protected final String SERVICE_NAME = "create_category";
+    protected final String SERVICE_NAME = "testor_quizzes";
 
     /**
      * Extends a URL with encoded query parameters

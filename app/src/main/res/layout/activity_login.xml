@@ -38,6 +38,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/loginUsername"
             android:inputType="text"
+            android:text="wsuser"
             android:textColor="@color/textDarkPrimary"
             android:textSize="34sp" />
     </android.support.design.widget.TextInputLayout>
@@ -56,6 +57,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/loginPassword"
             android:inputType="textPassword"
+            android:text="zauberdrops"
             android:textColor="@color/textDarkPrimary"
             android:textSize="34sp" />
     </android.support.design.widget.TextInputLayout>

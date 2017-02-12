@@ -4,7 +4,13 @@
     <color name="colorPrimaryMiddle">#D81B60</color>
     <color name="colorPrimaryDark">#C2185B</color>
     <color name="colorAccent">#FFD740</color>
+    <color name="textColorGreenPrimary">#DE4CAF50</color>
     <color name="textDarkPrimary">#DEFFFFFF</color>
     <color name="textDarkSecondary">#8AFFFFFF</color>
     <color name="textDarkTertiary">#3DFFFFFF</color>
+    <color name="backgroundColor">#EDEDED</color>
+    <color name="plainWhite">#FFFFFF</color>
+    <color name="blackPrimary">#DE000000</color>
+    <color name="blackSecondary">#8A000000</color>
+    <color name="blackTertiary">#3D000000</color>
 </resources>

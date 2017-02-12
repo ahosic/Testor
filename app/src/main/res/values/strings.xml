@@ -5,4 +5,9 @@
     <string name="loginTitle">Testor</string>
     <string name="sign_in">Sign in</string>
     <string name="authentication_dialog_text">Authenticating ...</string>
+    <string name="text_quizzes">Quizzes</string>
+    <string name="text_scores">Score</string>
+    <string name="get_quizzes_failed">Get Quizzes failed</string>
+    <string name="attempts">ATTEMPTS</string>
+    <string name="grade">GRADE</string>
 </resources>

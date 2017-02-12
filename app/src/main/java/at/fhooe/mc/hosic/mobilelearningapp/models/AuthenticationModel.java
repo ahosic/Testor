@@ -14,6 +14,7 @@ import at.fhooe.mc.hosic.mobilelearningapp.TestorApplication;
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.GsonRequest;
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.MessageType;
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.ModelChangedMessage;
+import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.Token;
 
 /**
  * Implements methods for authentication at the server.
@@ -30,6 +31,7 @@ public class AuthenticationModel extends BaseModel {
 
     // Members
     private RequestQueue queue;
+    private Token token;
 
     protected AuthenticationModel() {
         queue = Volley.newRequestQueue(TestorApplication.getContext());
@@ -79,6 +81,8 @@ public class AuthenticationModel extends BaseModel {
                     return;
                 }
 
+                token = response;
+
                 // Notify observers
                 instance.setChanged();
                 instance.notifyObservers(new ModelChangedMessage(MessageType.AUTHENTICATION_OK, response));
@@ -96,5 +100,9 @@ public class AuthenticationModel extends BaseModel {
 
         // Send request
         queue.add(request);
+    }
+
+    public Token getToken() {
+        return token;
     }
 }

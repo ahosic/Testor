@@ -1,6 +1,7 @@
 package at.fhooe.mc.hosic.mobilelearningapp;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -13,7 +14,7 @@ import java.util.Observer;
 
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.ModelChangedMessage;
 import at.fhooe.mc.hosic.mobilelearningapp.models.AuthenticationModel;
-import at.fhooe.mc.hosic.mobilelearningapp.models.Token;
+import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.Token;
 
 /**
  * Manages the Login procedure.
@@ -43,6 +44,11 @@ public class LoginActivity extends AppCompatActivity implements Observer {
         AuthenticationModel.getInstance().addObserver(this);
     }
 
+    /**
+     * Calls Authentication methods for signing in the user.
+     *
+     * @param _view View that invoked the method
+     */
     public void signIn(View _view) {
         Log.i(TAG, "signIn");
 
@@ -78,6 +84,10 @@ public class LoginActivity extends AppCompatActivity implements Observer {
                     Token token = (Token) msg.getArgs();
                     Toast.makeText(getApplicationContext(), "" + token.getToken(), Toast.LENGTH_SHORT).show();
 
+                    // Go to MainActivity
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    startActivity(intent);
                     break;
                 case AUTHENTICATION_FAILED:
                     Log.i(TAG, "Authentication failed");
