@@ -55,13 +55,9 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ScoreViewH
     @Override
     public void onBindViewHolder(ScoreViewHolder _holder, int _position) {
         Quiz q = quizzes.get(_position);
-
-        // Check, if real grade is available
-        if (q.getAttemptCount() > 0) {
-            _holder.quizName.setText(q.getName());
-            _holder.attemptsCount.setText("" + q.getAttemptCount());
-            _holder.grade.setText("" + q.getGrade());
-        }
+        _holder.quizName.setText(q.getName());
+        _holder.attemptsCount.setText("" + q.getAttemptCount());
+        _holder.grade.setText("" + q.getGrade());
     }
 
     /**

@@ -74,7 +74,7 @@ public class ScoresFragment extends Fragment implements Observer, RecyclerViewCl
      * Initializes an adapter for the recycler view.
      */
     public void setAdapter() {
-        mAdapter = new ScoresAdapter(QuizModel.getInstance().getQuizzesWithRealGrades(), this);
+        mAdapter = new ScoresAdapter(QuizModel.getInstance().getQuizzes(), this);
         mRecyclerView.setAdapter(mAdapter);
     }
 
