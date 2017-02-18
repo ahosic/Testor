@@ -58,20 +58,23 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
 
-        mQuestion = (TextView) findViewById(R.id.question);
-
+        // Initialize Views
         mCardA = (CardView) findViewById(R.id.quiz_card_A);
         mCardB = (CardView) findViewById(R.id.quiz_card_B);
         mCardC = (CardView) findViewById(R.id.quiz_card_C);
         mCardD = (CardView) findViewById(R.id.quiz_card_D);
-
+        mQuestion = (TextView) findViewById(R.id.question);
         mAnswerA = (TextView) findViewById(R.id.answerA);
         mAnswerB = (TextView) findViewById(R.id.answerB);
         mAnswerC = (TextView) findViewById(R.id.answerC);
         mAnswerD = (TextView) findViewById(R.id.answerD);
-
         mBottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         mBottomNavigationView.setOnNavigationItemSelectedListener(this);
+
+        // Initialize Progress dialog
+        mProgressDialog = new ProgressDialog(QuizActivity.this, R.style.QuizDialog);
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.setCancelable(false);
 
         Intent i = getIntent();
 
@@ -90,11 +93,7 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
         }
 
         if (!mStarted) {
-            mProgressDialog = new ProgressDialog(QuizActivity.this, R.style.QuizDialog);
-            mProgressDialog.setIndeterminate(true);
             mProgressDialog.setMessage(getString(R.string.start_quiz));
-            mProgressDialog.setCancelable(false);
-
             mProgressDialog.show();
 
             // Start attempt
@@ -166,8 +165,46 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
         // Remove from observers
         QuizModel.getInstance().deleteObserver(this);
 
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+            mProgressDialog = null;
+        }
+
         startActivity(new Intent(this, MainActivity.class));
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+            mProgressDialog = null;
+        }
+    }
+
+    /**
+     * Dispatch onPause() to fragments.
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+            mProgressDialog = null;
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+            mProgressDialog = null;
+        }
     }
 
     /**
