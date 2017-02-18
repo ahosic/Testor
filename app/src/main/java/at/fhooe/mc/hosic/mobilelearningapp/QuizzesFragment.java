@@ -1,6 +1,7 @@
 package at.fhooe.mc.hosic.mobilelearningapp;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -109,6 +110,14 @@ public class QuizzesFragment extends Fragment implements Observer, RecyclerViewC
     public void recyclerViewListClicked(View _view, int _position) {
         Log.i(TAG, "Recycler View clicked at position " + _position);
         Quiz q = QuizModel.getInstance().getQuizzes().get(_position);
-        Toast.makeText(TestorApplication.getContext(), q.getName(), Toast.LENGTH_SHORT).show();
+
+        QuizModel.getInstance().deleteObserver(this);
+
+        Intent intent = new Intent(getActivity(), QuizActivity.class);
+        intent.putExtra("quizid", q.getID());
+        intent.putExtra("started", false);
+        getActivity().startActivity(intent);
+
+        //Toast.makeText(TestorApplication.getContext(), q.getName(), Toast.LENGTH_SHORT).show();
     }
 }

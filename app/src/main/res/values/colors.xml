@@ -13,4 +13,5 @@
     <color name="blackPrimary">#DE000000</color>
     <color name="blackSecondary">#8A000000</color>
     <color name="blackTertiary">#3D000000</color>
+    <color name="dividerBlack">#1F000000</color>
 </resources>

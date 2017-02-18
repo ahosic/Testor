@@ -10,4 +10,10 @@
     <string name="get_quizzes_failed">Get Quizzes failed</string>
     <string name="attempts">ATTEMPTS</string>
     <string name="grade">GRADE</string>
+    <string name="skip">Skip</string>
+    <string name="select">Select</string>
+    <string name="get_question">Getting question ...</string>
+    <string name="start_quiz">Starting quiz ...</string>
+    <string name="save_failed">Could not save.</string>
+    <string name="finish_failed">Finishing attempt failed</string>
 </resources>

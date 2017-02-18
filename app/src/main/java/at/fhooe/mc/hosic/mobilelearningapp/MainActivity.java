@@ -28,17 +28,16 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         if (findViewById(R.id.fragment_container) != null) {
 
             // If restored from previous state
-            if (savedInstanceState != null) {
-                return;
+            if (savedInstanceState == null) {
+
+                // Create a new Fragment to be placed in the activity layout
+                mQuizzesFragment = new QuizzesFragment();
+                mScoresFragment = new ScoresFragment();
+
+                // Add the fragment to the 'fragment_container' FrameLayout
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fragment_container, mQuizzesFragment).commit();
             }
-
-            // Create a new Fragment to be placed in the activity layout
-            mQuizzesFragment = new QuizzesFragment();
-            mScoresFragment = new ScoresFragment();
-
-            // Add the fragment to the 'fragment_container' FrameLayout
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, mQuizzesFragment).commit();
         }
     }
 
@@ -57,16 +56,16 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         switch (item.getItemId()) {
             case R.id.action_quizzes:
                 Log.i(TAG, "Loading quizzes fragment");
-                transaction.replace(R.id.fragment_container, mQuizzesFragment);
+                transaction.replace(R.id.fragment_container, mQuizzesFragment, "quizFragment");
                 break;
             case R.id.action_scores:
                 Log.i(TAG, "Loading scores fragment");
-                transaction.replace(R.id.fragment_container, mScoresFragment);
+                transaction.replace(R.id.fragment_container, mScoresFragment, "scoresFragment");
                 break;
         }
 
         // End replacing transaction
-        transaction.addToBackStack(null);
+        //transaction.addToBackStack(null);
         transaction.commit();
 
         return true;
