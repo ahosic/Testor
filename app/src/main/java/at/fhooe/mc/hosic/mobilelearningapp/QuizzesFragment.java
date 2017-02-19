@@ -1,6 +1,7 @@
 package at.fhooe.mc.hosic.mobilelearningapp;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -33,6 +34,8 @@ public class QuizzesFragment extends Fragment implements Observer, RecyclerViewC
 
     private static final String TAG = "QuizzesFragment";
 
+    private Activity mActivity;
+
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -64,6 +67,17 @@ public class QuizzesFragment extends Fragment implements Observer, RecyclerViewC
 
         // Inflate the layout for this fragment
         return view;
+    }
+
+    /**
+     * Called when the fragment is no longer attached to its activity.  This
+     * is called after {@link #onDestroy()}.
+     */
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        QuizModel.getInstance().deleteObserver(this);
     }
 
     /**
@@ -100,6 +114,7 @@ public class QuizzesFragment extends Fragment implements Observer, RecyclerViewC
         }
     }
 
+
     /**
      * Gets invoked, when an item in a recycler view gets clicked.
      *
@@ -117,7 +132,5 @@ public class QuizzesFragment extends Fragment implements Observer, RecyclerViewC
         intent.putExtra("quizid", q.getID());
         intent.putExtra("started", false);
         getActivity().startActivity(intent);
-
-        //Toast.makeText(TestorApplication.getContext(), q.getName(), Toast.LENGTH_SHORT).show();
     }
 }

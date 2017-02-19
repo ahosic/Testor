@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
 
         // End replacing transaction
-        //transaction.addToBackStack(null);
         transaction.commit();
 
         return true;

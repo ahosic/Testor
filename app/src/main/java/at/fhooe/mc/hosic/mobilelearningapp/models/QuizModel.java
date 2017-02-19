@@ -69,6 +69,22 @@ public class QuizModel extends BaseModel {
     }
 
     /**
+     * Gets a Quiz based on the ID.
+     *
+     * @param _id ID of the quiz
+     * @return The quiz based on the provided ID.
+     */
+    public QuizDTO getQuizByID(int _id) {
+        for (QuizDTO q : quizzes) {
+            if (q.getID() == _id) {
+                return q;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Requests all quizzes that are available to the user from the Moodle server.
      */
     public void loadQuizzes() {

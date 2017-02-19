@@ -71,6 +71,17 @@ public class ScoresFragment extends Fragment implements Observer, RecyclerViewCl
     }
 
     /**
+     * Called when the fragment is no longer attached to its activity.  This
+     * is called after {@link #onDestroy()}.
+     */
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        QuizModel.getInstance().deleteObserver(this);
+    }
+
+    /**
      * Initializes an adapter for the recycler view.
      */
     public void setAdapter() {

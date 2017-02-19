@@ -8,22 +8,6 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="QuizAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="actionBarStyle">@style/QuizAppBar</item>
-        <item name="colorPrimary">@color/plainWhite</item>
-        <item name="colorPrimaryDark">@color/dividerBlack</item>
-        <item name="colorAccent">@color/colorPrimary</item>
-    </style>
-
-    <style name="QuizAppBar" parent="@style/Widget.AppCompat.ActionBar.Solid">
-        <item name="titleTextStyle">@style/QuizTitleTextStyle</item>
-    </style>
-
-    <style name="QuizTitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:textColor">@color/colorPrimary</item>
-    </style>
-
     <style name="AuthenticationDialog" parent="Theme.AppCompat.Dialog">
         <!-- Customize your theme here. -->
         <item name="android:layout_centerHorizontal">true</item>

@@ -1,16 +1,24 @@
 package at.fhooe.mc.hosic.mobilelearningapp;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,7 +32,10 @@ import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.AttemptDataDTO;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.AttemptInfoDTO;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.AttemptReviewDTO;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuestionDTO;
+import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizDTO;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizSelectionData;
+import at.grabner.circleprogress.CircleProgressView;
+import at.grabner.circleprogress.TextMode;
 
 public class QuizActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, Observer {
     private static final String TAG = "QuizActivity";
@@ -42,8 +53,15 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
     private TextView mAnswerC;
     private TextView mAnswerD;
 
+    private View mReviewLayout;
+    private AlertDialog mReviewDialog;
+    private CircleProgressView mReviewProgress;
+    private TextView mReviewQuizTitle;
+    private TextView mReviewDescription;
+
     private int mSelected = -1;
     private boolean mStarted;
+    private boolean mFinished = false;
 
     // QuizDTO data
     private int mQuizID;
@@ -58,6 +76,13 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
+
+        // Review Dialog
+        LayoutInflater inflater = getLayoutInflater();
+        mReviewLayout = inflater.inflate(R.layout.attempt_review_dialog, null);
+        mReviewProgress = (CircleProgressView) mReviewLayout.findViewById(R.id.review_quiz_progress);
+        mReviewQuizTitle = (TextView) mReviewLayout.findViewById(R.id.review_quiz_title);
+        mReviewDescription = (TextView) mReviewLayout.findViewById(R.id.review_quiz_description);
 
         // Initialize Views
         mCardA = (CardView) findViewById(R.id.quiz_card_A);
@@ -110,23 +135,10 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
     private void restoreData(Bundle _savedInstanceState) {
         // Restore selection
         mSelected = _savedInstanceState.getInt("selected");
-        switch (mSelected) {
-            case 0:
-                selectAnswer(mCardA, mAnswerA);
-                break;
-            case 1:
-                selectAnswer(mCardB, mAnswerB);
-                break;
-            case 2:
-                selectAnswer(mCardC, mAnswerC);
-                break;
-            case 3:
-                selectAnswer(mCardD, mAnswerD);
-                break;
-
-        }
+        selectAnswer();
 
         // Restore member variables
+        mFinished = _savedInstanceState.getBoolean("finished");
         mStarted = _savedInstanceState.getBoolean("started");
         mQuizID = _savedInstanceState.getInt("quizid");
         mAttemptID = _savedInstanceState.getInt("attemptid");
@@ -146,6 +158,7 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
+        outState.putBoolean("finished", mFinished);
         outState.putInt("selected", mSelected);
         outState.putBoolean("started", mStarted);
         outState.putInt("quizid", mQuizID);
@@ -171,6 +184,11 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
             mProgressDialog = null;
         }
 
+        if (mReviewDialog != null) {
+            mReviewDialog.dismiss();
+            mReviewDialog = null;
+        }
+
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
@@ -186,26 +204,16 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     /**
-     * Dispatch onPause() to fragments.
+     * Specifies the option menu of the app bar.
+     *
+     * @param menu The menu in which the items are being placed
+     * @return true for showing the menu, false for not showing
      */
     @Override
-    protected void onPause() {
-        super.onPause();
-
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
-            mProgressDialog = null;
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
-            mProgressDialog = null;
-        }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.quiz_attempt_menu, menu);
+        return true;
     }
 
     /**
@@ -213,73 +221,64 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
      *
      * @param _view The clicked view.
      */
-    public void onClickAnswerA(View _view) {
-        Log.i(TAG, "Answer A selected");
-        mSelected = 0;
-        selectAnswer(mCardA, mAnswerA);
-    }
+    public void onClickAnswer(View _view) {
+        mSelected = Integer.parseInt((String) _view.getTag());
+        Log.i(TAG, "Answer " + mSelected + " selected");
 
-    /**
-     * Selects the clicked answer.
-     *
-     * @param _view The clicked view.
-     */
-    public void onClickAnswerB(View _view) {
-        Log.i(TAG, "Answer B selected");
-        mSelected = 1;
-        selectAnswer(mCardB, mAnswerB);
-    }
-
-    /**
-     * Selects the clicked answer.
-     *
-     * @param _view The clicked view.
-     */
-    public void onClickAnswerC(View _view) {
-        Log.i(TAG, "Answer C selected");
-        mSelected = 2;
-        selectAnswer(mCardC, mAnswerC);
-    }
-
-    /**
-     * Selects the clicked answer.
-     *
-     * @param _view The clicked view.
-     */
-    public void onClickAnswerD(View _view) {
-        Log.i(TAG, "Answer D selected");
-        mSelected = 3;
-        selectAnswer(mCardD, mAnswerD);
+        selectAnswer();
     }
 
     /**
      * Selects a specific answer and changes the background and text color.
-     *
-     * @param _card The selected card
-     * @param _text The selected answer text
      */
-    private void selectAnswer(CardView _card, TextView _text) {
+    private void selectAnswer() {
         Log.i(TAG, "Select Answer");
+
+        unselectAll();
+
+        // Change Background and Text Color of selected answer
+        switch (mSelected) {
+            case 0:
+                mCardA.setCardBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+                mAnswerA.setTextColor(ContextCompat.getColor(this, R.color.plainWhite));
+                break;
+            case 1:
+                mCardB.setCardBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+                mAnswerB.setTextColor(ContextCompat.getColor(this, R.color.plainWhite));
+                break;
+            case 2:
+                mCardC.setCardBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+                mAnswerC.setTextColor(ContextCompat.getColor(this, R.color.plainWhite));
+                break;
+            case 3:
+                mCardD.setCardBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+                mAnswerD.setTextColor(ContextCompat.getColor(this, R.color.plainWhite));
+                break;
+        }
+    }
+
+    /**
+     * Unselects all answers.
+     */
+    private void unselectAll() {
+        Log.i(TAG, "Unselected all");
 
         mCardA.setCardBackgroundColor(ContextCompat.getColor(this, R.color.plainWhite));
         mCardB.setCardBackgroundColor(ContextCompat.getColor(this, R.color.plainWhite));
         mCardC.setCardBackgroundColor(ContextCompat.getColor(this, R.color.plainWhite));
         mCardD.setCardBackgroundColor(ContextCompat.getColor(this, R.color.plainWhite));
 
-        _card.setCardBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
-
         mAnswerA.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
         mAnswerB.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
         mAnswerC.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
         mAnswerD.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-
-        _text.setTextColor(ContextCompat.getColor(this, R.color.plainWhite));
     }
 
     /**
      * Requests the quiz data from the QuizModel.
      */
     private void getData() {
+
         if (mNextPage != -1) {
             mProgressDialog.setMessage(getString(R.string.get_question));
             mProgressDialog.show();
@@ -287,8 +286,10 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
             // Get attempt data
             QuizModel.getInstance().getAttemptData(mAttemptID, mNextPage);
         } else {
-            mProgressDialog.setMessage("Finishing QuizDTO ...");
+            mProgressDialog.setMessage(getString(R.string.finishing_quiz));
             mProgressDialog.show();
+
+            mFinished = true;
 
             // Finish QuizDTO
             QuizModel.getInstance().finishAttempt(mAttemptID);
@@ -321,6 +322,7 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
         mAnswerC.setText(answers[2]);
         mAnswerD.setText(answers[3]);
 
+        unselectAll();
         mProgressDialog.hide();
     }
 
@@ -343,14 +345,126 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
         QuizModel.getInstance().getAttemptFeedback(mAttemptID);
     }
 
+    /**
+     * Shows the review of a quiz attempt in a dialog.
+     *
+     * @param _review The review information of a quiz attempt.
+     */
+    private void showReview(AttemptReviewDTO _review) {
+        if (mReviewLayout != null) {
+            // Set Layout of dialog
+            AlertDialog.Builder mReview = new AlertDialog.Builder(this);
+            mReview.setView(mReviewLayout);
+            mReview.setCancelable(false);
+
+            final QuizActivity self = this;
+            mReview.setPositiveButton("FINISH", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    self.onBackPressed();
+                }
+            });
+
+            // Set Progress options
+            mReviewProgress.setTextMode(TextMode.PERCENT);
+
+            // Set Quiz Title
+            QuizDTO quiz = QuizModel.getInstance().getQuizByID(_review.getAttemptInfo().getQuizID());
+            if (quiz != null) {
+                mReviewQuizTitle.setText(quiz.getName());
+            }
+
+            // Set Review Description
+            mReviewDescription.setText(mFinished ? R.string.finished_quiz_description : R.string.quit_quiz_attempt);
+
+            // Create dialog
+            mReviewDialog = mReview.create();
+            mReviewDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface dialog) {
+                    Button btnPositive = mReviewDialog.getButton(Dialog.BUTTON_POSITIVE);
+                    btnPositive.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+                    btnPositive.setTextColor(ContextCompat.getColor(TestorApplication.getContext(), R.color.colorPrimary));
+                }
+            });
+
+            mReviewDialog.show();
+
+            // Set value of the progress
+            mReviewProgress.setValueAnimated(0, (float) _review.getGrade(), 2000);
+        }
+    }
 
     /**
-     * Called when an item in the bottom navigation menu is selected.
+     * Quits the quiz.
+     */
+    private void quitQuiz() {
+        // Build Alert Dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage("Do you really want to quit the quiz?").setTitle("Quit");
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Log.i(TAG, "Quiz quit");
+
+                mProgressDialog.setMessage(getString(R.string.finishing_quiz));
+                mProgressDialog.show();
+
+                // Finish attempt
+                QuizModel.getInstance().finishAttempt(mAttemptID);
+            }
+        });
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button btnPositive = alertDialog.getButton(Dialog.BUTTON_POSITIVE);
+                Button btnNegative = alertDialog.getButton(Dialog.BUTTON_NEGATIVE);
+
+                btnPositive.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+                btnPositive.setTextColor(ContextCompat.getColor(TestorApplication.getContext(), R.color.colorPrimary));
+
+                btnNegative.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+                btnNegative.setTextColor(ContextCompat.getColor(TestorApplication.getContext(), R.color.colorPrimary));
+            }
+        });
+
+        alertDialog.setCancelable(false);
+        alertDialog.show();
+    }
+
+    /**
+     * Invoked, when an options menu item gets clicked.
+     *
+     * @param item The clicked item
+     * @return true to display the item as the selected item and false if the item should not
+     * be selected.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.quiz_quit:
+                quitQuiz();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * Invoked, when an item in the bottom navigation menu is selected.
      *
      * @param item The selected item
      * @return true to display the item as the selected item and false if the item should not
-     * be selected. Consider setting non-selectable items as disabled preemptively to
-     * make them appear non-interactive.
+     * be selected.
      */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -358,11 +472,8 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
             case R.id.action_skip:
                 Log.i(TAG, "Answer skipped");
 
-                // TODO: Get next data
-
-                // Finish attempt
-                QuizModel.getInstance().finishAttempt(mAttemptID);
-
+                // Get next data
+                getData();
                 break;
             case R.id.action_select:
                 Log.i(TAG, "Answer selected");
@@ -422,8 +533,8 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
                     AttemptReviewDTO review = (AttemptReviewDTO) msg.getArgs();
                     Log.i(TAG, "Fetched attempt review for attempt " + review.getAttemptInfo().getID());
 
-                    // Go back to MainActivity
-                    this.onBackPressed();
+                    // Show review
+                    showReview(review);
                     break;
                 case ATTEMPT_START_FAILED:
                     Log.i(TAG, "Starting attempt failed");
