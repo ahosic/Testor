@@ -22,6 +22,7 @@ import at.fhooe.mc.hosic.mobilelearningapp.helpers.MoodleHTMLParser;
 import at.fhooe.mc.hosic.mobilelearningapp.models.QuizModel;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.AttemptDataDTO;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.AttemptInfoDTO;
+import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.AttemptReviewDTO;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuestionDTO;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizSelectionData;
 
@@ -335,6 +336,13 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
         }
     }
 
+    /**
+     * Gets the review of a quiz attempt after finish.
+     */
+    private void getReview() {
+        QuizModel.getInstance().getAttemptFeedback(mAttemptID);
+    }
+
 
     /**
      * Called when an item in the bottom navigation menu is selected.
@@ -380,55 +388,69 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
             mProgressDialog.hide();
 
             switch (msg.getType()) {
-                case QUIZ_ATTEMPT_STARTED:
-                    Log.i(TAG, "Started attempt");
+                case ATTEMPT_START_SUCCESS:
+                    AttemptInfoDTO info = (AttemptInfoDTO) msg.getArgs();
+                    Log.i(TAG, "Started attempt " + info.getID());
 
-                    AttemptInfoDTO a = (AttemptInfoDTO) msg.getArgs();
-                    mAttemptID = a.getID();
-                    mCurrentPage = a.getID();
+                    mAttemptID = info.getID();
+                    mCurrentPage = info.getID();
 
                     // Get data
                     getData();
                     break;
-                case ATTEMPT_DATA_RECEIVED:
+                case ATTEMPT_DATA_SUCCESS:
                     // Finish attempt
                     AttemptDataDTO data = (AttemptDataDTO) msg.getArgs();
-                    Log.i(TAG, "AttemptInfoDTO data received.");
+                    Log.i(TAG, "Attempt data received for attempt " + data.getAttempt().getID());
 
                     // Process data
                     processData(data);
                     break;
                 case ATTEMPT_SAVE_SUCCESS:
-                    Log.i(TAG, "Save successful: " + (int) msg.getArgs());
+                    Log.i(TAG, "Attempt save successful for attempt " + (int) msg.getArgs());
 
                     // Get next data
                     getData();
                     break;
-                case QUIZ_ATTEMPT_FINISHED_SUCCESS:
-                    Log.i(TAG, "Finished attempt: " + (int) msg.getArgs());
+                case ATTEMPT_FINISH_SUCCESS:
+                    Log.i(TAG, "Finished attempt " + (int) msg.getArgs());
+
+                    // Request review
+                    getReview();
+                    break;
+                case ATTEMPT_REVIEW_SUCCESS:
+                    AttemptReviewDTO review = (AttemptReviewDTO) msg.getArgs();
+                    Log.i(TAG, "Fetched attempt review for attempt " + review.getAttemptInfo().getID());
 
                     // Go back to MainActivity
                     this.onBackPressed();
                     break;
-                case QUIZ_ATTEMPT_FAILED:
+                case ATTEMPT_START_FAILED:
                     Log.i(TAG, "Starting attempt failed");
-                    Toast.makeText(TestorApplication.getContext(), R.string.get_quizzes_failed, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(TestorApplication.getContext(), R.string.start_quiz_attempt, Toast.LENGTH_SHORT).show();
 
                     // Go back to MainActivity
                     this.onBackPressed();
                     break;
                 case ATTEMPT_DATA_FAILED:
-                    Log.i(TAG, "AttemptInfoDTO data receiving failed.");
+                    Log.i(TAG, "Attempt data receiving failed for attempt " + (int) msg.getArgs());
 
                     // Finish attempt
                     QuizModel.getInstance().finishAttempt(mAttemptID);
                     break;
                 case ATTEMPT_SAVE_FAILED:
-                    Log.i(TAG, "Save failed " + (int) msg.getArgs());
+                    Log.i(TAG, "Attempt save failed for attempt " + (int) msg.getArgs());
                     Toast.makeText(TestorApplication.getContext(), R.string.save_failed, Toast.LENGTH_SHORT).show();
                     break;
-                case QUIZ_ATTEMPT_FINISHED_FAILED:
-                    Log.i(TAG, "Finishing attempt " + (int) msg.getArgs() + " failed");
+                case ATTEMPT_FINISH_FAILED:
+                    Log.i(TAG, "Finishing attempt failed for attempt " + (int) msg.getArgs());
+                    Toast.makeText(TestorApplication.getContext(), R.string.finish_failed, Toast.LENGTH_SHORT).show();
+
+                    // Go back to MainActivity
+                    this.onBackPressed();
+                    break;
+                case ATTEMPT_REVIEW_FAILED:
+                    Log.i(TAG, "Fetching attempt review failed for attempt " + (int) msg.getArgs());
                     Toast.makeText(TestorApplication.getContext(), R.string.finish_failed, Toast.LENGTH_SHORT).show();
 
                     // Go back to MainActivity

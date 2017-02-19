@@ -86,12 +86,12 @@ public class QuizzesFragment extends Fragment implements Observer, RecyclerViewC
             ModelChangedMessage msg = (ModelChangedMessage) o;
 
             switch (msg.getType()) {
-                case GET_QUIZZES_SUCCESS:
+                case LOAD_QUIZZES_SUCCESS:
                     Log.i(TAG, "Get Quizzes OK");
                     mProgressBar.setVisibility(View.GONE);
                     setAdapter();
                     break;
-                case GET_QUIZZES_FAILED:
+                case LOAD_QUIZZES_FAILED:
                     Log.i(TAG, "Get Quizzes failed");
                     mProgressBar.setVisibility(View.GONE);
                     Toast.makeText(TestorApplication.getContext(), R.string.get_quizzes_failed, Toast.LENGTH_SHORT).show();

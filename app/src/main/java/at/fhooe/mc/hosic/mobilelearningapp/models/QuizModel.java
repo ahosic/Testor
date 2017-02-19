@@ -17,6 +17,7 @@ import at.fhooe.mc.hosic.mobilelearningapp.helpers.GsonRequest;
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.MessageType;
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.ModelChangedMessage;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.AttemptDataDTO;
+import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.AttemptReviewDTO;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.ProcessAttemptDTO;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizAttemptDTO;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizDTO;
@@ -91,7 +92,7 @@ public class QuizModel extends BaseModel {
 
                     // Notify observers
                     instance.setChanged();
-                    instance.notifyObservers(new ModelChangedMessage(MessageType.GET_QUIZZES_FAILED, null));
+                    instance.notifyObservers(new ModelChangedMessage(MessageType.LOAD_QUIZZES_FAILED, null));
 
                     return;
                 }
@@ -101,7 +102,7 @@ public class QuizModel extends BaseModel {
 
                 // Notify observers
                 instance.setChanged();
-                instance.notifyObservers(new ModelChangedMessage(MessageType.GET_QUIZZES_SUCCESS, null));
+                instance.notifyObservers(new ModelChangedMessage(MessageType.LOAD_QUIZZES_SUCCESS, null));
             }
         }, new Response.ErrorListener() {
             @Override
@@ -110,7 +111,7 @@ public class QuizModel extends BaseModel {
 
                 // Notify observers
                 instance.setChanged();
-                instance.notifyObservers(new ModelChangedMessage(MessageType.GET_QUIZZES_FAILED, null));
+                instance.notifyObservers(new ModelChangedMessage(MessageType.LOAD_QUIZZES_FAILED, null));
             }
         });
 
@@ -147,7 +148,7 @@ public class QuizModel extends BaseModel {
 
                     // Notify observers
                     instance.setChanged();
-                    instance.notifyObservers(new ModelChangedMessage(MessageType.QUIZ_ATTEMPT_FAILED, null));
+                    instance.notifyObservers(new ModelChangedMessage(MessageType.ATTEMPT_START_FAILED, null));
 
                     return;
                 }
@@ -156,7 +157,7 @@ public class QuizModel extends BaseModel {
 
                 // Notify observers
                 instance.setChanged();
-                instance.notifyObservers(new ModelChangedMessage(MessageType.QUIZ_ATTEMPT_STARTED, response.getAttempt()));
+                instance.notifyObservers(new ModelChangedMessage(MessageType.ATTEMPT_START_SUCCESS, response.getAttempt()));
             }
         }, new Response.ErrorListener() {
             @Override
@@ -165,7 +166,7 @@ public class QuizModel extends BaseModel {
 
                 // Notify observers
                 instance.setChanged();
-                instance.notifyObservers(new ModelChangedMessage(MessageType.QUIZ_ATTEMPT_FAILED, null));
+                instance.notifyObservers(new ModelChangedMessage(MessageType.ATTEMPT_START_FAILED, null));
             }
         });
 
@@ -204,7 +205,7 @@ public class QuizModel extends BaseModel {
 
                     // Notify observers
                     instance.setChanged();
-                    instance.notifyObservers(new ModelChangedMessage(MessageType.QUIZ_ATTEMPT_FINISHED_FAILED, _attemptID));
+                    instance.notifyObservers(new ModelChangedMessage(MessageType.ATTEMPT_FINISH_FAILED, _attemptID));
 
                     return;
                 }
@@ -215,7 +216,7 @@ public class QuizModel extends BaseModel {
 
                 // Notify observers
                 instance.setChanged();
-                instance.notifyObservers(new ModelChangedMessage(MessageType.QUIZ_ATTEMPT_FINISHED_SUCCESS, _attemptID));
+                instance.notifyObservers(new ModelChangedMessage(MessageType.ATTEMPT_FINISH_SUCCESS, _attemptID));
             }
         }, new Response.ErrorListener() {
             @Override
@@ -224,7 +225,7 @@ public class QuizModel extends BaseModel {
 
                 // Notify observers
                 instance.setChanged();
-                instance.notifyObservers(new ModelChangedMessage(MessageType.QUIZ_ATTEMPT_FINISHED_FAILED, _attemptID));
+                instance.notifyObservers(new ModelChangedMessage(MessageType.ATTEMPT_FINISH_FAILED, _attemptID));
             }
         });
 
@@ -263,7 +264,7 @@ public class QuizModel extends BaseModel {
 
                     // Notify observers
                     instance.setChanged();
-                    instance.notifyObservers(new ModelChangedMessage(MessageType.QUIZ_ATTEMPT_FINISHED_FAILED, _attemptID));
+                    instance.notifyObservers(new ModelChangedMessage(MessageType.ATTEMPT_DATA_FAILED, _attemptID));
 
                     return;
                 }
@@ -272,7 +273,7 @@ public class QuizModel extends BaseModel {
 
                 // Notify observers
                 instance.setChanged();
-                instance.notifyObservers(new ModelChangedMessage(MessageType.ATTEMPT_DATA_RECEIVED, response));
+                instance.notifyObservers(new ModelChangedMessage(MessageType.ATTEMPT_DATA_SUCCESS, response));
             }
         }, new Response.ErrorListener() {
             @Override
@@ -281,7 +282,7 @@ public class QuizModel extends BaseModel {
 
                 // Notify observers
                 instance.setChanged();
-                instance.notifyObservers(new ModelChangedMessage(MessageType.QUIZ_ATTEMPT_FINISHED_FAILED, _attemptID));
+                instance.notifyObservers(new ModelChangedMessage(MessageType.ATTEMPT_DATA_FAILED, _attemptID));
             }
         });
 
@@ -353,5 +354,55 @@ public class QuizModel extends BaseModel {
         queue.add(request);
     }
 
+    public void getAttemptFeedback(final int _attemptID) {
+        // Define parameters
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("wstoken", AuthenticationModel.getInstance().getToken().getToken());
+        params.put("wsfunction", "mod_quiz_get_attempt_review");
+        params.put("moodlewsrestformat", "json");
 
+        // Encode URL
+        String url = encodeURLWithParams(BASE_URL, params);
+
+        // Body parameters
+        HashMap<String, String> bodyParams = new HashMap<String, String>();
+        bodyParams.put("attemptid", "" + _attemptID);
+        bodyParams.put("page", "-1");
+
+        // Build request
+        GsonRequest<AttemptReviewDTO> request = new GsonRequest<>(Request.Method.POST, url, AttemptReviewDTO.class, bodyParams, new Response.Listener<AttemptReviewDTO>() {
+            @Override
+            public void onResponse(AttemptReviewDTO response) {
+                Log.i(TAG, "Start QuizDTO AttemptInfoDTO response");
+
+                if (response.getAttemptInfo() == null) {
+                    Log.i(TAG, "Attempt Review: Attempt Info null");
+
+                    // Notify observers
+                    instance.setChanged();
+                    instance.notifyObservers(new ModelChangedMessage(MessageType.ATTEMPT_REVIEW_FAILED, _attemptID));
+
+                    return;
+                }
+
+                Log.i(TAG, "Attempt Review received for attempt " + _attemptID);
+
+                // Notify observers
+                instance.setChanged();
+                instance.notifyObservers(new ModelChangedMessage(MessageType.ATTEMPT_REVIEW_SUCCESS, response));
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i(TAG, "Attempt Review Request failed.");
+
+                // Notify observers
+                instance.setChanged();
+                instance.notifyObservers(new ModelChangedMessage(MessageType.ATTEMPT_REVIEW_FAILED, _attemptID));
+            }
+        });
+
+        // Send request
+        queue.add(request);
+    }
 }

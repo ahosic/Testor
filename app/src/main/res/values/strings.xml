@@ -16,4 +16,5 @@
     <string name="start_quiz">Starting quiz ...</string>
     <string name="save_failed">Could not save.</string>
     <string name="finish_failed">Finishing attempt failed</string>
+    <string name="start_quiz_attempt">Starting quiz failed.</string>
 </resources>
