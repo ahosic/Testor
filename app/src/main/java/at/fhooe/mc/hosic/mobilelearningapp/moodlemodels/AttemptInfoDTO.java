@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
  * @version 1.0
  */
 
-public class Attempt {
+public class AttemptInfoDTO {
 
     @SerializedName("id")
     private int mID;
@@ -26,7 +26,7 @@ public class Attempt {
     @SerializedName("state")
     private String mState;
 
-    public Attempt(int _id, int _quizID, int _userID, int _currentPage, String _state) {
+    public AttemptInfoDTO(int _id, int _quizID, int _userID, int _currentPage, String _state) {
         mID = _id;
         mQuizID = _quizID;
         mUserID = _userID;

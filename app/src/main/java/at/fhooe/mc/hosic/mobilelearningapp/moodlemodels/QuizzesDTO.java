@@ -11,17 +11,17 @@ import com.google.gson.annotations.SerializedName;
 
 public class QuizzesDTO {
     @SerializedName("quizzes")
-    private Quiz[] mQuizzes;
+    private QuizDTO[] mQuizzes;
 
-    public QuizzesDTO(Quiz[] _quizzes) {
+    public QuizzesDTO(QuizDTO[] _quizzes) {
         mQuizzes = _quizzes;
     }
 
-    public Quiz[] getQuizzes() {
+    public QuizDTO[] getQuizzes() {
         return mQuizzes;
     }
 
-    public void setQuizzes(Quiz[] _quizzes) {
+    public void setQuizzes(QuizDTO[] _quizzes) {
         mQuizzes = _quizzes;
     }
 }

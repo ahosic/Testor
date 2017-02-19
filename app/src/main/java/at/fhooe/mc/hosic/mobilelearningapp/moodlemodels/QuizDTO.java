@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
  * @version 1.0
  */
 
-public class Quiz {
+public class QuizDTO {
 
     @SerializedName("id")
     private int mID;
@@ -26,7 +26,7 @@ public class Quiz {
     @SerializedName("grade")
     private int mGrade;
 
-    public Quiz(int _id, int _course, String _name, int _attemptCount, int _grade) {
+    public QuizDTO(int _id, int _course, String _name, int _attemptCount, int _grade) {
         mID = _id;
         mCourse = _course;
         mName = _name;

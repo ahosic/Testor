@@ -20,7 +20,7 @@ import at.fhooe.mc.hosic.mobilelearningapp.adapters.QuizzesAdapter;
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.ModelChangedMessage;
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.RecyclerViewClickListener;
 import at.fhooe.mc.hosic.mobilelearningapp.models.QuizModel;
-import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.Quiz;
+import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizDTO;
 
 
 /**
@@ -109,7 +109,7 @@ public class QuizzesFragment extends Fragment implements Observer, RecyclerViewC
     @Override
     public void recyclerViewListClicked(View _view, int _position) {
         Log.i(TAG, "Recycler View clicked at position " + _position);
-        Quiz q = QuizModel.getInstance().getQuizzes().get(_position);
+        QuizDTO q = QuizModel.getInstance().getQuizzes().get(_position);
 
         QuizModel.getInstance().deleteObserver(this);
 

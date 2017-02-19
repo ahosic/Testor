@@ -9,12 +9,12 @@ import com.google.gson.annotations.SerializedName;
  * @version 1.0
  * */
 
-public class Token {
+public class TokenDTO {
 
     @SerializedName("token")
     private String mToken;
 
-    public Token(String _token) {
+    public TokenDTO(String _token) {
         mToken = _token;
     }
 

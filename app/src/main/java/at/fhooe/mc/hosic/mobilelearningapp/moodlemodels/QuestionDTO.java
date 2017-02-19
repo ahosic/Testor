@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
  * @version 1.0
  */
 
-public class Question {
+public class QuestionDTO {
 
     @SerializedName("slot")
     private int mSlot;
@@ -23,7 +23,7 @@ public class Question {
     @SerializedName("sequencecheck")
     private int mSequencecheck;
 
-    public Question(int _slot, int _questionNumber, String _html, int _sequencecheck) {
+    public QuestionDTO(int _slot, int _questionNumber, String _html, int _sequencecheck) {
         mSlot = _slot;
         mQuestionNumber = _questionNumber;
         mHTML = _html;

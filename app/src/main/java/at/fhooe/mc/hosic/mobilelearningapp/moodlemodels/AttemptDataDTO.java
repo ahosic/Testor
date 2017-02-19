@@ -11,26 +11,26 @@ import com.google.gson.annotations.SerializedName;
 
 public class AttemptDataDTO {
     @SerializedName("attempt")
-    private Attempt mAttempt;
+    private AttemptInfoDTO mAttemptInfo;
 
     @SerializedName("nextpage")
     private int mNextPage;
 
     @SerializedName("questions")
-    private Question[] mQuestions;
+    private QuestionDTO[] mQuestions;
 
-    public AttemptDataDTO(Attempt _attempt, int _nextPage, Question[] _questions) {
-        mAttempt = _attempt;
+    public AttemptDataDTO(AttemptInfoDTO _attemptInfo, int _nextPage, QuestionDTO[] _questions) {
+        mAttemptInfo = _attemptInfo;
         mNextPage = _nextPage;
         mQuestions = _questions;
     }
 
-    public Attempt getAttempt() {
-        return mAttempt;
+    public AttemptInfoDTO getAttempt() {
+        return mAttemptInfo;
     }
 
-    public void setAttempt(Attempt _attempt) {
-        mAttempt = _attempt;
+    public void setAttempt(AttemptInfoDTO _attemptInfo) {
+        mAttemptInfo = _attemptInfo;
     }
 
     public int getNextPage() {
@@ -41,11 +41,11 @@ public class AttemptDataDTO {
         mNextPage = _nextPage;
     }
 
-    public Question[] getQuestions() {
+    public QuestionDTO[] getQuestions() {
         return mQuestions;
     }
 
-    public void setQuestions(Question[] _questions) {
+    public void setQuestions(QuestionDTO[] _questions) {
         mQuestions = _questions;
     }
 }

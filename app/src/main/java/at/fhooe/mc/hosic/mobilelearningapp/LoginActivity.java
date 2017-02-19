@@ -14,7 +14,7 @@ import java.util.Observer;
 
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.ModelChangedMessage;
 import at.fhooe.mc.hosic.mobilelearningapp.models.AuthenticationModel;
-import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.Token;
+import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.TokenDTO;
 
 /**
  * Manages the Login procedure.
@@ -81,7 +81,7 @@ public class LoginActivity extends AppCompatActivity implements Observer {
                         mProgressDialog.hide();
                     }
 
-                    Token token = (Token) msg.getArgs();
+                    TokenDTO token = (TokenDTO) msg.getArgs();
                     Toast.makeText(getApplicationContext(), "" + token.getToken(), Toast.LENGTH_SHORT).show();
 
                     // Go to MainActivity

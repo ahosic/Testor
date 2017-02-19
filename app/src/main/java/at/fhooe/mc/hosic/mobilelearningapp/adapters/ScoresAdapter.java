@@ -11,7 +11,7 @@ import java.util.List;
 
 import at.fhooe.mc.hosic.mobilelearningapp.R;
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.RecyclerViewClickListener;
-import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.Quiz;
+import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizDTO;
 
 /**
  * Defines an adapter for displaying the scores of quizzes in a recycler view
@@ -23,9 +23,9 @@ import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.Quiz;
 public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ScoreViewHolder> {
 
     private static RecyclerViewClickListener itemListener;
-    private List<Quiz> quizzes;
+    private List<QuizDTO> quizzes;
 
-    public ScoresAdapter(List<Quiz> _quizzes, RecyclerViewClickListener _itemListener) {
+    public ScoresAdapter(List<QuizDTO> _quizzes, RecyclerViewClickListener _itemListener) {
         quizzes = _quizzes;
         itemListener = _itemListener;
     }
@@ -54,7 +54,7 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ScoreViewH
      */
     @Override
     public void onBindViewHolder(ScoreViewHolder _holder, int _position) {
-        Quiz q = quizzes.get(_position);
+        QuizDTO q = quizzes.get(_position);
         _holder.quizName.setText(q.getName());
         _holder.attemptsCount.setText("" + q.getAttemptCount());
         _holder.grade.setText("" + q.getGrade());

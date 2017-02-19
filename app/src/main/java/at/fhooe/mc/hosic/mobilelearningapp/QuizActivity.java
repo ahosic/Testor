@@ -20,9 +20,9 @@ import java.util.Observer;
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.ModelChangedMessage;
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.MoodleHTMLParser;
 import at.fhooe.mc.hosic.mobilelearningapp.models.QuizModel;
-import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.Attempt;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.AttemptDataDTO;
-import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.Question;
+import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.AttemptInfoDTO;
+import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuestionDTO;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizSelectionData;
 
 public class QuizActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, Observer {
@@ -44,7 +44,7 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
     private int mSelected = -1;
     private boolean mStarted;
 
-    // Quiz data
+    // QuizDTO data
     private int mQuizID;
     private int mAttemptID;
     private int mCurrentPage;
@@ -97,7 +97,7 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
             mProgressDialog.show();
 
             // Start attempt
-            QuizModel.getInstance().startQuizAttempt(mQuizID);
+            QuizModel.getInstance().startAttempt(mQuizID);
         }
     }
 
@@ -286,10 +286,10 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
             // Get attempt data
             QuizModel.getInstance().getAttemptData(mAttemptID, mNextPage);
         } else {
-            mProgressDialog.setMessage("Finishing Quiz ...");
+            mProgressDialog.setMessage("Finishing QuizDTO ...");
             mProgressDialog.show();
 
-            // Finish Quiz
+            // Finish QuizDTO
             QuizModel.getInstance().finishAttempt(mAttemptID);
         }
     }
@@ -300,9 +300,9 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
      * @param _data The received quiz data
      */
     private void processData(AttemptDataDTO _data) {
-        Question q = _data.getQuestions()[0];
+        QuestionDTO q = _data.getQuestions()[0];
 
-        // Set Quiz variables
+        // Set QuizDTO variables
         mCurrentPage = _data.getAttempt().getCurrentPage();
         mNextPage = _data.getNextPage();
         mSequenceCheck = q.getSequencecheck();
@@ -330,7 +330,7 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
         if (mSelected != -1) {
             QuizSelectionData data = new QuizSelectionData(mAttemptID, mQuestionNumber, mSelected, mSequenceCheck, mCurrentPage, mNextPage, mSlot);
 
-            // Save Attempt Data
+            // Save AttemptInfoDTO Data
             QuizModel.getInstance().saveAttemptData(data);
         }
     }
@@ -383,7 +383,7 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
                 case QUIZ_ATTEMPT_STARTED:
                     Log.i(TAG, "Started attempt");
 
-                    Attempt a = (Attempt) msg.getArgs();
+                    AttemptInfoDTO a = (AttemptInfoDTO) msg.getArgs();
                     mAttemptID = a.getID();
                     mCurrentPage = a.getID();
 
@@ -393,7 +393,7 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
                 case ATTEMPT_DATA_RECEIVED:
                     // Finish attempt
                     AttemptDataDTO data = (AttemptDataDTO) msg.getArgs();
-                    Log.i(TAG, "Attempt data received.");
+                    Log.i(TAG, "AttemptInfoDTO data received.");
 
                     // Process data
                     processData(data);
@@ -418,7 +418,7 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
                     this.onBackPressed();
                     break;
                 case ATTEMPT_DATA_FAILED:
-                    Log.i(TAG, "Attempt data receiving failed.");
+                    Log.i(TAG, "AttemptInfoDTO data receiving failed.");
 
                     // Finish attempt
                     QuizModel.getInstance().finishAttempt(mAttemptID);

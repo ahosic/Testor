@@ -5,7 +5,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 /**
- * Provides methods to parse the Quiz HTML provided by Moodle.
+ * Provides methods to parse the QuizDTO HTML provided by Moodle.
  *
  * @author Almin Hosic
  * @version 1.0

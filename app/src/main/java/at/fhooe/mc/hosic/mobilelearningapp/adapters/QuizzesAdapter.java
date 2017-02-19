@@ -11,7 +11,7 @@ import java.util.List;
 
 import at.fhooe.mc.hosic.mobilelearningapp.R;
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.RecyclerViewClickListener;
-import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.Quiz;
+import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizDTO;
 
 /**
  * Defines an adapter for displaying Quizzes in a recycler view
@@ -23,9 +23,9 @@ import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.Quiz;
 public class QuizzesAdapter extends RecyclerView.Adapter<QuizzesAdapter.QuizViewHolder> {
 
     private static RecyclerViewClickListener itemListener;
-    private List<Quiz> quizzes;
+    private List<QuizDTO> quizzes;
 
-    public QuizzesAdapter(List<Quiz> _quizzes, RecyclerViewClickListener _listener) {
+    public QuizzesAdapter(List<QuizDTO> _quizzes, RecyclerViewClickListener _listener) {
         quizzes = _quizzes;
         itemListener = _listener;
     }

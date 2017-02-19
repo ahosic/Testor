@@ -14,7 +14,7 @@ import at.fhooe.mc.hosic.mobilelearningapp.TestorApplication;
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.GsonRequest;
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.MessageType;
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.ModelChangedMessage;
-import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.Token;
+import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.TokenDTO;
 
 /**
  * Implements methods for authentication at the server.
@@ -31,7 +31,7 @@ public class AuthenticationModel extends BaseModel {
 
     // Members
     private RequestQueue queue;
-    private Token token;
+    private TokenDTO token;
 
     protected AuthenticationModel() {
         queue = Volley.newRequestQueue(TestorApplication.getContext());
@@ -66,13 +66,13 @@ public class AuthenticationModel extends BaseModel {
         String url = encodeURLWithParams(LOGIN_URL, params);
 
         // Build request
-        GsonRequest<Token> request = new GsonRequest<>(Request.Method.GET, url, Token.class, null, new Response.Listener<Token>() {
+        GsonRequest<TokenDTO> request = new GsonRequest<>(Request.Method.GET, url, TokenDTO.class, null, new Response.Listener<TokenDTO>() {
             @Override
-            public void onResponse(Token response) {
+            public void onResponse(TokenDTO response) {
                 Log.i(TAG, "Authentication response");
 
                 if (response.getToken() == null) {
-                    Log.i(TAG, "Token null");
+                    Log.i(TAG, "TokenDTO null");
 
                     // Notify observers
                     instance.setChanged();
@@ -102,7 +102,7 @@ public class AuthenticationModel extends BaseModel {
         queue.add(request);
     }
 
-    public Token getToken() {
+    public TokenDTO getToken() {
         return token;
     }
 }

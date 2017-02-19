@@ -18,14 +18,14 @@ import at.fhooe.mc.hosic.mobilelearningapp.helpers.MessageType;
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.ModelChangedMessage;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.AttemptDataDTO;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.ProcessAttemptDTO;
-import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.Quiz;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizAttemptDTO;
+import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizDTO;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizSelectionData;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizzesDTO;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.SaveDataResponseDTO;
 
 /**
- * Implements methods of the Quiz module of Moodle.
+ * Implements methods of the QuizDTO module of Moodle.
  *
  * @author Almin Hosic
  * @version 1.0
@@ -39,10 +39,11 @@ public class QuizModel extends BaseModel {
 
     // Members
     private RequestQueue queue;
-    private LinkedList<Quiz> quizzes;
+    private LinkedList<QuizDTO> quizzes;
 
     protected QuizModel() {
         queue = Volley.newRequestQueue(TestorApplication.getContext());
+        quizzes = new LinkedList<QuizDTO>();
     }
 
     /**
@@ -62,7 +63,7 @@ public class QuizModel extends BaseModel {
      *
      * @return A collection of quizzes.
      */
-    public LinkedList<Quiz> getQuizzes() {
+    public LinkedList<QuizDTO> getQuizzes() {
         return quizzes;
     }
 
@@ -122,7 +123,7 @@ public class QuizModel extends BaseModel {
      *
      * @param _quizID The quiz ID
      */
-    public void startQuizAttempt(int _quizID) {
+    public void startAttempt(int _quizID) {
         // Define parameters
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("wstoken", AuthenticationModel.getInstance().getToken().getToken());
@@ -139,10 +140,10 @@ public class QuizModel extends BaseModel {
         GsonRequest<QuizAttemptDTO> request = new GsonRequest<>(Request.Method.POST, url, QuizAttemptDTO.class, bodyParams, new Response.Listener<QuizAttemptDTO>() {
             @Override
             public void onResponse(QuizAttemptDTO response) {
-                Log.i(TAG, "Start Quiz Attempt response");
+                Log.i(TAG, "Start QuizDTO AttemptInfoDTO response");
 
                 if (response.getAttempt() == null || (response.getErrorcode() != null && !response.getErrorcode().equals("attemptstillinprogress"))) {
-                    Log.i(TAG, "Quiz Attempt State invalid");
+                    Log.i(TAG, "QuizDTO AttemptInfoDTO State invalid");
 
                     // Notify observers
                     instance.setChanged();
@@ -160,7 +161,7 @@ public class QuizModel extends BaseModel {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i(TAG, "Start Quiz Attempt failure");
+                Log.i(TAG, "Start QuizDTO AttemptInfoDTO failure");
 
                 // Notify observers
                 instance.setChanged();
@@ -196,7 +197,7 @@ public class QuizModel extends BaseModel {
         GsonRequest<ProcessAttemptDTO> request = new GsonRequest<>(Request.Method.POST, url, ProcessAttemptDTO.class, bodyParams, new Response.Listener<ProcessAttemptDTO>() {
             @Override
             public void onResponse(ProcessAttemptDTO response) {
-                Log.i(TAG, "Start Quiz Attempt response");
+                Log.i(TAG, "Start QuizDTO AttemptInfoDTO response");
 
                 if (response.getState() == null || (response.getState() != null && !response.getState().equals("finished"))) {
                     Log.i(TAG, "Could not finish quiz attempt " + _attemptID);
@@ -219,7 +220,7 @@ public class QuizModel extends BaseModel {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i(TAG, "Start Quiz Attempt failure");
+                Log.i(TAG, "Start QuizDTO AttemptInfoDTO failure");
 
                 // Notify observers
                 instance.setChanged();
@@ -234,7 +235,7 @@ public class QuizModel extends BaseModel {
     /**
      * Gets the data of a quiz attempt.
      *
-     * @param _attemptID The ID of the Quiz attempt
+     * @param _attemptID The ID of the QuizDTO attempt
      * @param _page      The page, which should be loaded
      */
     public void getAttemptData(final int _attemptID, int _page) {
@@ -255,7 +256,7 @@ public class QuizModel extends BaseModel {
         GsonRequest<AttemptDataDTO> request = new GsonRequest<>(Request.Method.POST, url, AttemptDataDTO.class, bodyParams, new Response.Listener<AttemptDataDTO>() {
             @Override
             public void onResponse(AttemptDataDTO response) {
-                Log.i(TAG, "Start Quiz Attempt response");
+                Log.i(TAG, "Start QuizDTO AttemptInfoDTO response");
 
                 if (response.getAttempt() == null || response.getQuestions() == null || response.getQuestions()[0] == null) {
                     Log.i(TAG, "Could not get attempt data for attempt " + _attemptID);
@@ -319,7 +320,7 @@ public class QuizModel extends BaseModel {
         GsonRequest<SaveDataResponseDTO> request = new GsonRequest<>(Request.Method.POST, url, SaveDataResponseDTO.class, bodyParams, new Response.Listener<SaveDataResponseDTO>() {
             @Override
             public void onResponse(SaveDataResponseDTO response) {
-                Log.i(TAG, "Start Quiz Attempt response");
+                Log.i(TAG, "Start QuizDTO AttemptInfoDTO response");
 
                 if (response.getStatus() == null || !response.getStatus().equals("true")) {
                     Log.i(TAG, "Could not save attempt data for attempt " + _data.getAttemptID());
@@ -351,4 +352,6 @@ public class QuizModel extends BaseModel {
         // Send request
         queue.add(request);
     }
+
+
 }

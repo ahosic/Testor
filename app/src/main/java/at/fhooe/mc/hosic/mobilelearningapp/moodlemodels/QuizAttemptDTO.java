@@ -11,22 +11,22 @@ import com.google.gson.annotations.SerializedName;
 
 public class QuizAttemptDTO {
     @SerializedName("attempt")
-    private Attempt mAttempt;
+    private AttemptInfoDTO mAttemptInfo;
 
     @SerializedName("errorcode")
     private String mErrorcode;
 
-    public QuizAttemptDTO(Attempt _attempt, String _errorcode) {
-        mAttempt = _attempt;
+    public QuizAttemptDTO(AttemptInfoDTO _attemptInfo, String _errorcode) {
+        mAttemptInfo = _attemptInfo;
         mErrorcode = _errorcode;
     }
 
-    public Attempt getAttempt() {
-        return mAttempt;
+    public AttemptInfoDTO getAttempt() {
+        return mAttemptInfo;
     }
 
-    public void setAttempt(Attempt _attempt) {
-        mAttempt = _attempt;
+    public void setAttempt(AttemptInfoDTO _attemptInfo) {
+        mAttemptInfo = _attemptInfo;
     }
 
     public String getErrorcode() {
