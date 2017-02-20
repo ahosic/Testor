@@ -33,7 +33,6 @@ import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.AttemptInfoDTO;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.AttemptReviewDTO;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuestionDTO;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizDTO;
-import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizSelectionData;
 import at.grabner.circleprogress.CircleProgressView;
 import at.grabner.circleprogress.TextMode;
 import me.grantland.widget.AutofitTextView;
@@ -332,10 +331,20 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
      */
     private void saveData() {
         if (mSelected != -1) {
-            QuizSelectionData data = new QuizSelectionData(mAttemptID, mQuestionNumber, mSelected, mSequenceCheck, mCurrentPage, mNextPage, mSlot);
-
             // Save AttemptInfoDTO Data
-            QuizModel.getInstance().saveAttemptData(data);
+            QuizModel.getInstance().saveAttemptData(mAttemptID, mQuestionNumber, mSelected, mSequenceCheck);
+        } else {
+            // Show info
+            AlertDialog alertDialog = new AlertDialog.Builder(QuizActivity.this).create();
+            alertDialog.setTitle("No selection");
+            alertDialog.setMessage("Please select an answer.");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
         }
     }
 

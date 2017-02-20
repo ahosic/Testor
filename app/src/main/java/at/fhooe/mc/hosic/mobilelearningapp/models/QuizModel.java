@@ -21,7 +21,6 @@ import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.AttemptReviewDTO;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.ProcessAttemptDTO;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizAttemptDTO;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizDTO;
-import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizSelectionData;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizzesDTO;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.SaveDataResponseDTO;
 
@@ -309,9 +308,12 @@ public class QuizModel extends BaseModel {
     /**
      * Saves a selected answer of a quiz attempt on the Moodle server.
      *
-     * @param _data The data that should be saved on the Moodle server.
+     * @param _attemptID ID of quiz attempt
+     * @param _qno       Number of question
+     * @param _ano       Number of answer
+     * @param _sCheck    Sequence Check Number of question
      */
-    public void saveAttemptData(final QuizSelectionData _data) {
+    public void saveAttemptData(final int _attemptID, int _qno, int _ano, int _sCheck) {
         // Define parameters
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("wstoken", AuthenticationModel.getInstance().getToken().getToken());
@@ -321,17 +323,17 @@ public class QuizModel extends BaseModel {
         // Encode URL
         String url = encodeURLWithParams(BASE_URL, params);
 
-        String sCheckName = "q" + (_data.getAttemptID() + 1) + ":" + _data.getQuestionNumber() + "_:sequencecheck";
-        String ansName = "q" + (_data.getAttemptID() + 1) + ":" + _data.getQuestionNumber() + "_answer";
+        String sCheckName = "q" + (_attemptID + 1) + ":" + _qno + "_:sequencecheck";
+        String ansName = "q" + (_attemptID + 1) + ":" + _qno + "_answer";
 
         HashMap<String, String> bodyParams = new HashMap<String, String>();
-        bodyParams.put("attemptid", "" + _data.getAttemptID());
+        bodyParams.put("attemptid", "" + _attemptID);
         bodyParams.put("data[0][name]", sCheckName);
-        bodyParams.put("data[0][value]", "" + _data.getSequenceCheck());
+        bodyParams.put("data[0][value]", "" + _sCheck);
         bodyParams.put("data[1][name]", ansName);
-        bodyParams.put("data[1][value]", "" + _data.getAnswerNumber());
+        bodyParams.put("data[1][value]", "" + _ano);
         bodyParams.put("data[2][name]", "attempt");
-        bodyParams.put("data[2][value]", "" + _data.getAttemptID());
+        bodyParams.put("data[2][value]", "" + _attemptID);
 
         // Build request
         GsonRequest<SaveDataResponseDTO> request = new GsonRequest<>(Request.Method.POST, url, SaveDataResponseDTO.class, bodyParams, new Response.Listener<SaveDataResponseDTO>() {
@@ -340,29 +342,29 @@ public class QuizModel extends BaseModel {
                 Log.i(TAG, "Start QuizDTO AttemptInfoDTO response");
 
                 if (response.getStatus() == null || !response.getStatus().equals("true")) {
-                    Log.i(TAG, "Could not save attempt data for attempt " + _data.getAttemptID());
+                    Log.i(TAG, "Could not save attempt data for attempt " + _attemptID);
 
                     // Notify observers
                     instance.setChanged();
-                    instance.notifyObservers(new ModelChangedMessage(MessageType.ATTEMPT_SAVE_FAILED, _data.getAttemptID()));
+                    instance.notifyObservers(new ModelChangedMessage(MessageType.ATTEMPT_SAVE_FAILED, _attemptID));
 
                     return;
                 }
 
-                Log.i(TAG, "Data saved for attempt: " + _data.getAttemptID());
+                Log.i(TAG, "Data saved for attempt: " + _attemptID);
 
                 // Notify observers
                 instance.setChanged();
-                instance.notifyObservers(new ModelChangedMessage(MessageType.ATTEMPT_SAVE_SUCCESS, _data.getAttemptID()));
+                instance.notifyObservers(new ModelChangedMessage(MessageType.ATTEMPT_SAVE_SUCCESS, _attemptID));
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i(TAG, "Could not save attempt data for attempt " + _data.getAttemptID());
+                Log.i(TAG, "Could not save attempt data for attempt " + _attemptID);
 
                 // Notify observers
                 instance.setChanged();
-                instance.notifyObservers(new ModelChangedMessage(MessageType.ATTEMPT_SAVE_FAILED, _data.getAttemptID()));
+                instance.notifyObservers(new ModelChangedMessage(MessageType.ATTEMPT_SAVE_FAILED, _attemptID));
             }
         });
 
@@ -370,6 +372,11 @@ public class QuizModel extends BaseModel {
         queue.add(request);
     }
 
+    /**
+     * Gets the feedback of a quiz attempt.
+     *
+     * @param _attemptID ID of the attempt
+     */
     public void getAttemptFeedback(final int _attemptID) {
         // Define parameters
         HashMap<String, String> params = new HashMap<String, String>();
