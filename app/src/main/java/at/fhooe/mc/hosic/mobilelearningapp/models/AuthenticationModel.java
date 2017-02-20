@@ -15,6 +15,7 @@ import at.fhooe.mc.hosic.mobilelearningapp.helpers.GsonRequest;
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.MessageType;
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.ModelChangedMessage;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.TokenDTO;
+import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.UserInfoDTO;
 
 /**
  * Implements methods for authentication at the server.
@@ -32,6 +33,7 @@ public class AuthenticationModel extends BaseModel {
     // Members
     private RequestQueue queue;
     private TokenDTO token;
+    private UserInfoDTO userInfo;
 
     protected AuthenticationModel() {
         queue = Volley.newRequestQueue(TestorApplication.getContext());
@@ -50,7 +52,7 @@ public class AuthenticationModel extends BaseModel {
     }
 
     /**
-     * Authenticates a user at the server and requests a service token.
+     * Authenticates a user at the moodle server and requests a service token.
      *
      * @param _username The username of the user
      * @param _password The password of the user
@@ -81,11 +83,11 @@ public class AuthenticationModel extends BaseModel {
                     return;
                 }
 
+                // Set token
                 token = response;
 
-                // Notify observers
-                instance.setChanged();
-                instance.notifyObservers(new ModelChangedMessage(MessageType.AUTHENTICATION_OK, response));
+                // Get user info
+                requestUserInfo();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -102,7 +104,62 @@ public class AuthenticationModel extends BaseModel {
         queue.add(request);
     }
 
+    /**
+     * Requests info about the user from moodle.
+     */
+    private void requestUserInfo() {
+        // Define parameters
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("wstoken", token.getToken());
+        params.put("wsfunction", "core_webservice_get_site_info");
+        params.put("moodlewsrestformat", "json");
+
+        // Encode URL
+        String url = encodeURLWithParams(BASE_URL, params);
+
+        // Build request
+        GsonRequest<UserInfoDTO> request = new GsonRequest<>(Request.Method.GET, url, UserInfoDTO.class, null, new Response.Listener<UserInfoDTO>() {
+            @Override
+            public void onResponse(UserInfoDTO response) {
+                Log.i(TAG, "Request User Info response");
+
+                if (response.getUsername() == null) {
+                    Log.i(TAG, "Username null");
+
+                    // Notify observers
+                    instance.setChanged();
+                    instance.notifyObservers(new ModelChangedMessage(MessageType.AUTHENTICATION_FAILED, null));
+
+                    return;
+                }
+
+                // Set user info
+                userInfo = response;
+
+                // Notify observers
+                instance.setChanged();
+                instance.notifyObservers(new ModelChangedMessage(MessageType.AUTHENTICATION_OK, token));
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i(TAG, "Request User Info failed");
+
+                // Notify observers
+                instance.setChanged();
+                instance.notifyObservers(new ModelChangedMessage(MessageType.AUTHENTICATION_FAILED, null));
+            }
+        });
+
+        // Send request
+        queue.add(request);
+    }
+
     public TokenDTO getToken() {
         return token;
+    }
+
+    public int getUserID() {
+        return userInfo.getID();
     }
 }

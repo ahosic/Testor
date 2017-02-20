@@ -1,5 +1,6 @@
 package at.fhooe.mc.hosic.mobilelearningapp.models;
 
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -10,6 +11,7 @@ import com.android.volley.toolbox.Volley;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 import at.fhooe.mc.hosic.mobilelearningapp.TestorApplication;
@@ -24,6 +26,8 @@ import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizDTO;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizzesDTO;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.SaveDataResponseDTO;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Implements methods of the QuizDTO module of Moodle.
  *
@@ -34,6 +38,7 @@ import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.SaveDataResponseDTO;
 public class QuizModel extends BaseModel {
     // Static variables
     private static final String TAG = "QuizModel";
+    private static final String QUIZ_PREFS = "QuizPrefs";
     private static QuizModel instance = null;
 
 
@@ -81,6 +86,84 @@ public class QuizModel extends BaseModel {
         }
 
         return null;
+    }
+
+    /**
+     * Saves the ID of an open quiz attempt to shared preferences.
+     *
+     * @param _attemptID ID of the quiz attempt
+     */
+    private void saveOpenAttempt(int _attemptID) {
+        Log.i(TAG, "Saving open attempt " + _attemptID);
+
+        SharedPreferences sharedPref = TestorApplication.getContext().getSharedPreferences(QUIZ_PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+
+        // Get all ids
+        String userid = String.valueOf(AuthenticationModel.getInstance().getUserID());
+        HashSet<String> ids = (HashSet<String>) sharedPref.getStringSet(userid, null);
+
+        // Check, if null
+        if (ids == null) {
+            ids = new HashSet<String>();
+        }
+
+        // Add id
+        ids.add(String.valueOf(_attemptID));
+
+        // Save changes
+        editor.putStringSet(userid, ids);
+        editor.commit();
+    }
+
+    /**
+     * Removes the ID of an open attempt from shared preferences.
+     *
+     * @param _attemptID ID of the quiz attempt
+     */
+    private void removeOpenAttempt(int _attemptID) {
+        Log.i(TAG, "Removing open attempt " + _attemptID);
+
+        SharedPreferences sharedPref = TestorApplication.getContext().getSharedPreferences(QUIZ_PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+
+        // Get all ids
+        String userid = String.valueOf(AuthenticationModel.getInstance().getUserID());
+        HashSet<String> ids = (HashSet<String>) sharedPref.getStringSet(userid, null);
+
+        // Check, if null
+        if (ids != null && !ids.isEmpty()) {
+            ids.remove(String.valueOf(_attemptID));
+        }
+
+        // Save changes
+        if (!ids.isEmpty()) {
+            editor.putStringSet(userid, ids);
+        } else {
+            editor.remove(userid);
+        }
+
+        editor.commit();
+    }
+
+    /**
+     * Checks, if there are any open quiz attempts and finishes them.
+     */
+    public void finishAllOpenAttempts() {
+        Log.i(TAG, "Finishing all open attempts");
+        SharedPreferences sharedPref = TestorApplication.getContext().getSharedPreferences(QUIZ_PREFS, MODE_PRIVATE);
+
+        // Get all ids
+        String userid = String.valueOf(AuthenticationModel.getInstance().getUserID());
+        HashSet<String> ids = (HashSet<String>) sharedPref.getStringSet(userid, null);
+
+        // Check, if null
+        if (ids != null && !ids.isEmpty()) {
+            for (String id : ids) {
+                // Finish all open attempts
+                finishAttempt(Integer.parseInt(id), true);
+            }
+        }
     }
 
     /**
@@ -156,10 +239,10 @@ public class QuizModel extends BaseModel {
         GsonRequest<QuizAttemptDTO> request = new GsonRequest<>(Request.Method.POST, url, QuizAttemptDTO.class, bodyParams, new Response.Listener<QuizAttemptDTO>() {
             @Override
             public void onResponse(QuizAttemptDTO response) {
-                Log.i(TAG, "Start QuizDTO AttemptInfoDTO response");
+                Log.i(TAG, "Start Attempt response");
 
                 if (response.getAttempt() == null || (response.getErrorcode() != null && !response.getErrorcode().equals("attemptstillinprogress"))) {
-                    Log.i(TAG, "QuizDTO AttemptInfoDTO State invalid");
+                    Log.i(TAG, "Attempt State invalid");
 
                     // Notify observers
                     instance.setChanged();
@@ -169,6 +252,9 @@ public class QuizModel extends BaseModel {
                 }
 
                 Log.i(TAG, "Last attempt: " + response.getAttempt().getID());
+
+                // Save open attempt id
+                saveOpenAttempt(response.getAttempt().getID());
 
                 // Notify observers
                 instance.setChanged();
@@ -194,7 +280,7 @@ public class QuizModel extends BaseModel {
      *
      * @param _attemptID The ID of the attempt
      */
-    public void finishAttempt(final int _attemptID) {
+    public void finishAttempt(final int _attemptID, final boolean silentFlag) {
         // Define parameters
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("wstoken", AuthenticationModel.getInstance().getToken().getToken());
@@ -218,20 +304,28 @@ public class QuizModel extends BaseModel {
                 if (response.getState() == null || (response.getState() != null && !response.getState().equals("finished"))) {
                     Log.i(TAG, "Could not finish quiz attempt " + _attemptID);
 
+                    // Remove open attempt id
+                    removeOpenAttempt(_attemptID);
+
                     // Notify observers
-                    instance.setChanged();
-                    instance.notifyObservers(new ModelChangedMessage(MessageType.ATTEMPT_FINISH_FAILED, _attemptID));
+                    if (!silentFlag) {
+                        instance.setChanged();
+                        instance.notifyObservers(new ModelChangedMessage(MessageType.ATTEMPT_FINISH_FAILED, _attemptID));
+                    }
 
                     return;
                 }
 
                 Log.i(TAG, "Finished attempt: " + _attemptID);
 
-                // TODO: Remove last attempt here
+                // Remove open attempt id
+                removeOpenAttempt(_attemptID);
 
                 // Notify observers
-                instance.setChanged();
-                instance.notifyObservers(new ModelChangedMessage(MessageType.ATTEMPT_FINISH_SUCCESS, _attemptID));
+                if (!silentFlag) {
+                    instance.setChanged();
+                    instance.notifyObservers(new ModelChangedMessage(MessageType.ATTEMPT_FINISH_SUCCESS, _attemptID));
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -239,8 +333,10 @@ public class QuizModel extends BaseModel {
                 Log.i(TAG, "Start QuizDTO AttemptInfoDTO failure");
 
                 // Notify observers
-                instance.setChanged();
-                instance.notifyObservers(new ModelChangedMessage(MessageType.ATTEMPT_FINISH_FAILED, _attemptID));
+                if (!silentFlag) {
+                    instance.setChanged();
+                    instance.notifyObservers(new ModelChangedMessage(MessageType.ATTEMPT_FINISH_FAILED, _attemptID));
+                }
             }
         });
 

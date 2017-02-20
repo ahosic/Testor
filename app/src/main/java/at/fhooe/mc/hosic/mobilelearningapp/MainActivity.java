@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 
+import at.fhooe.mc.hosic.mobilelearningapp.models.QuizModel;
+
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
@@ -39,6 +41,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                         .add(R.id.fragment_container, mQuizzesFragment).commit();
             }
         }
+
+        // Finish all open quiz attempts
+        QuizModel.getInstance().finishAllOpenAttempts();
     }
 
     /**

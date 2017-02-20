@@ -292,7 +292,7 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
             mFinished = true;
 
             // Finish QuizDTO
-            QuizModel.getInstance().finishAttempt(mAttemptID);
+            QuizModel.getInstance().finishAttempt(mAttemptID, false);
         }
     }
 
@@ -434,7 +434,7 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
                 mProgressDialog.show();
 
                 // Finish attempt
-                QuizModel.getInstance().finishAttempt(mAttemptID);
+                QuizModel.getInstance().finishAttempt(mAttemptID, false);
             }
         });
         builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -569,7 +569,7 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
                     Log.i(TAG, "Attempt data receiving failed for attempt " + (int) msg.getArgs());
 
                     // Finish attempt
-                    QuizModel.getInstance().finishAttempt(mAttemptID);
+                    QuizModel.getInstance().finishAttempt(mAttemptID, true);
                     break;
                 case ATTEMPT_SAVE_FAILED:
                     Log.i(TAG, "Attempt save failed for attempt " + (int) msg.getArgs());
