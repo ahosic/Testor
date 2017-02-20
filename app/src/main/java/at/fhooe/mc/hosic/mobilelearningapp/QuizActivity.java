@@ -36,6 +36,7 @@ import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizDTO;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizSelectionData;
 import at.grabner.circleprogress.CircleProgressView;
 import at.grabner.circleprogress.TextMode;
+import me.grantland.widget.AutofitTextView;
 
 public class QuizActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, Observer {
     private static final String TAG = "QuizActivity";
@@ -43,15 +44,15 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
     private ProgressDialog mProgressDialog;
 
     private BottomNavigationView mBottomNavigationView;
-    private TextView mQuestion;
+    private AutofitTextView mQuestion;
     private CardView mCardA;
     private CardView mCardB;
     private CardView mCardC;
     private CardView mCardD;
-    private TextView mAnswerA;
-    private TextView mAnswerB;
-    private TextView mAnswerC;
-    private TextView mAnswerD;
+    private AutofitTextView mAnswerA;
+    private AutofitTextView mAnswerB;
+    private AutofitTextView mAnswerC;
+    private AutofitTextView mAnswerD;
 
     private View mReviewLayout;
     private AlertDialog mReviewDialog;
@@ -89,11 +90,11 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
         mCardB = (CardView) findViewById(R.id.quiz_card_B);
         mCardC = (CardView) findViewById(R.id.quiz_card_C);
         mCardD = (CardView) findViewById(R.id.quiz_card_D);
-        mQuestion = (TextView) findViewById(R.id.question);
-        mAnswerA = (TextView) findViewById(R.id.answerA);
-        mAnswerB = (TextView) findViewById(R.id.answerB);
-        mAnswerC = (TextView) findViewById(R.id.answerC);
-        mAnswerD = (TextView) findViewById(R.id.answerD);
+        mQuestion = (AutofitTextView) findViewById(R.id.question);
+        mAnswerA = (AutofitTextView) findViewById(R.id.answerA);
+        mAnswerB = (AutofitTextView) findViewById(R.id.answerB);
+        mAnswerC = (AutofitTextView) findViewById(R.id.answerC);
+        mAnswerD = (AutofitTextView) findViewById(R.id.answerD);
         mBottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         mBottomNavigationView.setOnNavigationItemSelectedListener(this);
 

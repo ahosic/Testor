@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:autofit="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_quiz"
     android:layout_width="match_parent"
@@ -36,7 +37,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- QuestionDTO -->
+        <!-- Question Card -->
         <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/question_card"
@@ -51,16 +52,18 @@
                 android:layout_height="match_parent"
                 android:padding="32dp">
 
-                <TextView
+                <me.grantland.widget.AutofitTextView
                     android:id="@+id/question"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
+                    android:maxLines="3"
                     android:textAlignment="center"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    autofit:minTextSize="16sp" />
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 
@@ -76,7 +79,7 @@
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/quiz_card_A"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="0.5"
                 android:onClick="onClickAnswer"
                 android:tag="0"
@@ -85,19 +88,19 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="32dp">
+                    android:layout_height="match_parent"
+                    android:padding="16dp">
 
-                    <TextView
+                    <me.grantland.widget.AutofitTextView
                         android:id="@+id/answerA"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
                         android:layout_centerVertical="true"
-                        android:textAlignment="center"
+                        android:maxLines="2"
                         android:textColor="@color/colorPrimary"
                         android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        autofit:minTextSize="14sp" />
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
 
@@ -106,7 +109,7 @@
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/quiz_card_B"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="0.5"
                 android:onClick="onClickAnswer"
                 android:tag="1"
@@ -115,19 +118,19 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="32dp">
+                    android:layout_height="match_parent"
+                    android:padding="16dp">
 
-                    <TextView
+                    <me.grantland.widget.AutofitTextView
                         android:id="@+id/answerB"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
                         android:layout_centerVertical="true"
-                        android:textAlignment="center"
+                        android:maxLines="2"
                         android:textColor="@color/colorPrimary"
                         android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        autofit:minTextSize="14sp" />
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
         </LinearLayout>
@@ -144,7 +147,7 @@
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/quiz_card_C"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="0.5"
                 android:onClick="onClickAnswer"
                 android:tag="2"
@@ -153,19 +156,19 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="32dp">
+                    android:layout_height="match_parent"
+                    android:padding="16dp">
 
-                    <TextView
+                    <me.grantland.widget.AutofitTextView
                         android:id="@+id/answerC"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
                         android:layout_centerVertical="true"
-                        android:textAlignment="center"
+                        android:maxLines="2"
                         android:textColor="@color/colorPrimary"
                         android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        autofit:minTextSize="14sp" />
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
 
@@ -174,7 +177,7 @@
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/quiz_card_D"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="0.5"
                 android:onClick="onClickAnswer"
                 android:tag="3"
@@ -183,19 +186,19 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="32dp">
+                    android:layout_height="match_parent"
+                    android:padding="16dp">
 
-                    <TextView
+                    <me.grantland.widget.AutofitTextView
                         android:id="@+id/answerD"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
                         android:layout_centerVertical="true"
-                        android:textAlignment="center"
+                        android:maxLines="2"
                         android:textColor="@color/colorPrimary"
                         android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        autofit:minTextSize="14sp" />
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
         </LinearLayout>
