@@ -22,4 +22,12 @@
     <string name="quit">Quit</string>
     <string name="quit_quiz_attempt">You have quit the quiz.</string>
     <string name="finishing_quiz">Finishing Quiz ...</string>
+    <string name="no_answer_selection">Please select an answer.</string>
+    <string name="no_answer_selection_title">No selection</string>
+    <string name="ok">OK</string>
+    <string name="quit_quiz_question">Do you really want to quit the quiz?</string>
+    <string name="quit_quiz_title">Quit</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+    <string name="finish">FINISH</string>
 </resources>

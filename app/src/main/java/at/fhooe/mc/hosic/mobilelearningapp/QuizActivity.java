@@ -335,15 +335,27 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
             QuizModel.getInstance().saveAttemptData(mAttemptID, mQuestionNumber, mSelected, mSequenceCheck);
         } else {
             // Show info
-            AlertDialog alertDialog = new AlertDialog.Builder(QuizActivity.this).create();
-            alertDialog.setTitle("No selection");
-            alertDialog.setMessage("Please select an answer.");
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setMessage(R.string.no_answer_selection).setTitle(R.string.no_answer_selection_title);
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+
+            final AlertDialog alertDialog = builder.create();
+            alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface dialog) {
+                    Button btnPositive = alertDialog.getButton(Dialog.BUTTON_POSITIVE);
+
+                    btnPositive.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+                    btnPositive.setTextColor(ContextCompat.getColor(TestorApplication.getContext(), R.color.colorPrimary));
+                }
+            });
+
+            alertDialog.setCancelable(false);
             alertDialog.show();
         }
     }
@@ -368,7 +380,7 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
             mReview.setCancelable(false);
 
             final QuizActivity self = this;
-            mReview.setPositiveButton("FINISH", new DialogInterface.OnClickListener() {
+            mReview.setPositiveButton(R.string.finish, new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -413,8 +425,8 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
         // Build Alert Dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setMessage("Do you really want to quit the quiz?").setTitle("Quit");
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+        builder.setMessage(R.string.quit_quiz_question).setTitle(R.string.quit_quiz_title);
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 Log.i(TAG, "Quiz quit");
 
@@ -425,7 +437,7 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
                 QuizModel.getInstance().finishAttempt(mAttemptID);
             }
         });
-        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
             }
