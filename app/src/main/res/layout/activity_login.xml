@@ -8,13 +8,13 @@
     android:background="@color/colorPrimary"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/loginAcitvity_paddingLeft"
-    android:paddingRight="@dimen/loginAcitvity_paddingRight"
-    android:paddingTop="@dimen/loginAcitvity_paddingTop"
+    android:paddingLeft="32dp"
+    android:paddingRight="32dp"
+    android:paddingTop="32dp"
     android:theme="@style/Theme.AppCompat.Light.NoActionBar"
     tools:context="at.fhooe.mc.hosic.mobilelearningapp.LoginActivity">
 
-    <TextView
+    <!--TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
@@ -22,7 +22,21 @@
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textColor="@color/textDarkPrimary"
-        android:textSize="24sp" />
+        android:textSize="24sp" /-->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/white_logo" />
+    </RelativeLayout>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
@@ -64,14 +78,13 @@
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btn_login"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:background="@color/colorPrimaryDark"
         android:onClick="signIn"
-        android:padding="16dp"
+        android:padding="24dp"
         android:text="@string/sign_in"
-        android:textColor="@color/textDarkPrimary"
-        android:textSize="24sp" />
+        android:textSize="24sp"
+        android:theme="@style/LoginButton" />
 
 </LinearLayout>

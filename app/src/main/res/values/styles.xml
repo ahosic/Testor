@@ -42,4 +42,9 @@
         <item name="colorControlActivated">#DEFFFFFF</item>
     </style>
 
+    <style name="LoginButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">#FFF</item>
+        <item name="android:textColorPrimary">@color/colorPrimary</item>
+    </style>
+
 </resources>
