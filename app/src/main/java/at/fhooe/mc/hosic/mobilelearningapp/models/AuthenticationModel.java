@@ -105,6 +105,16 @@ public class AuthenticationModel extends BaseModel {
     }
 
     /**
+     * Signs out the current signed in user.
+     */
+    public void signOut() {
+        Log.i(TAG, "Sign out of user " + userInfo.getUsername());
+
+        token = null;
+        userInfo = null;
+    }
+
+    /**
      * Requests info about the user from moodle.
      */
     private void requestUserInfo() {

@@ -45,6 +45,15 @@ public class LoginActivity extends AppCompatActivity implements Observer {
     }
 
     /**
+     * Take care of popping the fragment back stack or finishing the activity
+     * as appropriate.
+     */
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
+    /**
      * Calls Authentication methods for signing in the user.
      *
      * @param _view View that invoked the method
@@ -86,8 +95,8 @@ public class LoginActivity extends AppCompatActivity implements Observer {
 
                     // Go to MainActivity
                     Intent intent = new Intent(this, MainActivity.class);
-                    intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
                     startActivity(intent);
+                    finish();
                     break;
                 case AUTHENTICATION_FAILED:
                     Log.i(TAG, "Authentication failed");

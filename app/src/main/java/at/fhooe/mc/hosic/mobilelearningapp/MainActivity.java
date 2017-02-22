@@ -1,13 +1,17 @@
 package at.fhooe.mc.hosic.mobilelearningapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import at.fhooe.mc.hosic.mobilelearningapp.models.AuthenticationModel;
 import at.fhooe.mc.hosic.mobilelearningapp.models.QuizModel;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
@@ -44,6 +48,47 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         // Finish all open quiz attempts
         QuizModel.getInstance().finishAllOpenAttempts();
+    }
+
+    /**
+     * Specifies the option menu of the app bar.
+     *
+     * @param menu The menu in which the items are being placed
+     * @return true for showing the menu, false for not showing
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_view_menu, menu);
+        return true;
+    }
+
+    /**
+     * Invoked, when an options menu item gets clicked.
+     *
+     * @param item The clicked item
+     * @return true to display the item as the selected item and false if the item should not
+     * be selected.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.logout:
+                // Detach fragments
+                getSupportFragmentManager().beginTransaction().detach(mQuizzesFragment).commit();
+                getSupportFragmentManager().beginTransaction().detach(mScoresFragment).commit();
+
+                // Sign out
+                AuthenticationModel.getInstance().signOut();
+
+                // Go back to Login
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /**

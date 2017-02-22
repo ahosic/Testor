@@ -189,8 +189,7 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
             mReviewDialog = null;
         }
 
-        startActivity(new Intent(this, MainActivity.class));
-        finish();
+        super.onBackPressed();
     }
 
     @Override
