@@ -10,7 +10,9 @@ import android.widget.TextView;
 import java.util.List;
 
 import at.fhooe.mc.hosic.mobilelearningapp.R;
-import at.fhooe.mc.hosic.mobilelearningapp.helpers.RecyclerViewClickListener;
+import at.fhooe.mc.hosic.mobilelearningapp.models.AuthenticationModel;
+import at.fhooe.mc.hosic.mobilelearningapp.models.Score;
+import at.fhooe.mc.hosic.mobilelearningapp.models.ScoreDatabaseHandler;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizDTO;
 
 /**
@@ -22,12 +24,10 @@ import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizDTO;
 
 public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ScoreViewHolder> {
 
-    private static RecyclerViewClickListener itemListener;
     private List<QuizDTO> quizzes;
 
-    public ScoresAdapter(List<QuizDTO> _quizzes, RecyclerViewClickListener _itemListener) {
+    public ScoresAdapter(List<QuizDTO> _quizzes) {
         quizzes = _quizzes;
-        itemListener = _itemListener;
     }
 
     /**
@@ -55,9 +55,26 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ScoreViewH
     @Override
     public void onBindViewHolder(ScoreViewHolder _holder, int _position) {
         QuizDTO q = quizzes.get(_position);
-        _holder.quizName.setText(q.getName());
-        _holder.attemptsCount.setText("" + q.getAttemptCount());
-        _holder.grade.setText("" + q.getGrade());
+
+        // Get score and attempt count
+        Score score = ScoreDatabaseHandler.getInstance().getScoreForQuiz(
+                q.getID(),
+                AuthenticationModel.getInstance().getUserID());
+
+        int count = ScoreDatabaseHandler.getInstance().getAttemptsCount(
+                q.getID(),
+                AuthenticationModel.getInstance().getUserID());
+
+        // Set values
+        if (score != null && count > 0) {
+            _holder.quizName.setText(q.getName());
+            _holder.attemptsCount.setText("" + count);
+            _holder.grade.setText("" + (int) score.getGrade() + " %");
+        } else {
+            _holder.quizName.setText(q.getName());
+            _holder.attemptsCount.setText("0");
+            _holder.grade.setText("-");
+        }
     }
 
     /**
@@ -83,7 +100,7 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ScoreViewH
     /**
      * Holds the views that are used for displaying the content of the quiz items.
      */
-    public static class ScoreViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class ScoreViewHolder extends RecyclerView.ViewHolder {
         private LinearLayout container;
         private TextView quizName;
         private TextView attemptsCount;
@@ -96,19 +113,6 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ScoreViewH
             quizName = (TextView) _itemView.findViewById(R.id.quiz_name);
             attemptsCount = (TextView) _itemView.findViewById(R.id.score_attempts_cnt);
             grade = (TextView) _itemView.findViewById(R.id.score_grade);
-
-            // Set click listener
-            container.setOnClickListener(this);
-        }
-
-        /**
-         * Invoked, when the user clicks on a list item.
-         *
-         * @param _view The clicked view
-         */
-        @Override
-        public void onClick(View _view) {
-            itemListener.recyclerViewListClicked(_view, this.getLayoutPosition());
         }
     }
 }

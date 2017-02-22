@@ -489,7 +489,7 @@ public class QuizModel extends BaseModel {
         bodyParams.put("page", "-1");
 
         // Build request
-        GsonRequest<AttemptReviewDTO> request = new GsonRequest<>(Request.Method.POST, url, AttemptReviewDTO.class, bodyParams, new Response.Listener<AttemptReviewDTO>() {
+        final GsonRequest<AttemptReviewDTO> request = new GsonRequest<>(Request.Method.POST, url, AttemptReviewDTO.class, bodyParams, new Response.Listener<AttemptReviewDTO>() {
             @Override
             public void onResponse(AttemptReviewDTO response) {
                 Log.i(TAG, "Start QuizDTO AttemptInfoDTO response");
@@ -505,6 +505,16 @@ public class QuizModel extends BaseModel {
                 }
 
                 Log.i(TAG, "Attempt Review received for attempt " + _attemptID);
+
+                // Create score
+                Score score = new Score(
+                        response.getAttemptInfo().getID(),
+                        response.getAttemptInfo().getUserID(),
+                        response.getAttemptInfo().getQuizID(),
+                        response.getGrade());
+
+                // Save score
+                ScoreDatabaseHandler.getInstance().addScore(score);
 
                 // Notify observers
                 instance.setChanged();

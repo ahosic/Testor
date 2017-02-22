@@ -18,9 +18,7 @@ import java.util.Observer;
 
 import at.fhooe.mc.hosic.mobilelearningapp.adapters.ScoresAdapter;
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.ModelChangedMessage;
-import at.fhooe.mc.hosic.mobilelearningapp.helpers.RecyclerViewClickListener;
 import at.fhooe.mc.hosic.mobilelearningapp.models.QuizModel;
-import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizDTO;
 
 
 /**
@@ -29,7 +27,7 @@ import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuizDTO;
  * @author Almin Hosic
  * @version 1.0
  */
-public class ScoresFragment extends Fragment implements Observer, RecyclerViewClickListener {
+public class ScoresFragment extends Fragment implements Observer {
 
     private static final String TAG = "ScoresFragment";
 
@@ -85,7 +83,7 @@ public class ScoresFragment extends Fragment implements Observer, RecyclerViewCl
      * Initializes an adapter for the recycler view.
      */
     public void setAdapter() {
-        mAdapter = new ScoresAdapter(QuizModel.getInstance().getQuizzes(), this);
+        mAdapter = new ScoresAdapter(QuizModel.getInstance().getQuizzes());
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -114,18 +112,4 @@ public class ScoresFragment extends Fragment implements Observer, RecyclerViewCl
             }
         }
     }
-
-    /**
-     * Gets invoked, when an item in a recycler view gets clicked.
-     *
-     * @param _view     The clicked view
-     * @param _position The position of the item in its list.
-     */
-    @Override
-    public void recyclerViewListClicked(View _view, int _position) {
-        Log.i(TAG, "Recycler View clicked at position " + _position);
-        QuizDTO q = QuizModel.getInstance().getQuizzes().get(_position);
-        Toast.makeText(TestorApplication.getContext(), q.getName(), Toast.LENGTH_SHORT).show();
-    }
-
 }
