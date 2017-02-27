@@ -10,9 +10,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 
 import at.fhooe.mc.hosic.mobilelearningapp.TestorApplication;
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.GsonRequest;
@@ -86,6 +88,33 @@ public class QuizModel extends BaseModel {
         }
 
         return null;
+    }
+
+    /**
+     * Gets a list of all quizzes with the total count of attempts and the highscore for each quiz.
+     *
+     * @return A list of objects of type QuizHighscore
+     */
+    public List<QuizHighscore> getQuizHighscores() {
+        LinkedList<QuizHighscore> highscores = new LinkedList<QuizHighscore>();
+
+        for (QuizDTO q : quizzes) {
+            // Get highscore
+            Score score = ScoreDatabaseHandler.getInstance().getHighscoreForQuiz(
+                    q.getID(),
+                    AuthenticationModel.getInstance().getUserID());
+
+            // Get attempt count
+            int count = ScoreDatabaseHandler.getInstance().getAttemptsCount(
+                    q.getID(),
+                    AuthenticationModel.getInstance().getUserID());
+
+            if (score != null && count > 0) {
+                highscores.add(new QuizHighscore(q, score, count));
+            }
+        }
+
+        return highscores;
     }
 
     /**
@@ -511,7 +540,8 @@ public class QuizModel extends BaseModel {
                         response.getAttemptInfo().getID(),
                         response.getAttemptInfo().getUserID(),
                         response.getAttemptInfo().getQuizID(),
-                        response.getGrade());
+                        response.getGrade(),
+                        Calendar.getInstance().getTime());
 
                 // Save score
                 ScoreDatabaseHandler.getInstance().addScore(score);

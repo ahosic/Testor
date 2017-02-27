@@ -123,7 +123,7 @@ public class QuizzesFragment extends Fragment implements Observer, RecyclerViewC
      */
     @Override
     public void recyclerViewListClicked(View _view, int _position) {
-        Log.i(TAG, "Recycler View clicked at position " + _position);
+        Log.i(TAG, "Quizzes View clicked at position " + _position);
         QuizDTO q = QuizModel.getInstance().getQuizzes().get(_position);
 
         QuizModel.getInstance().deleteObserver(this);

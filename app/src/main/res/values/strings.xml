@@ -31,4 +31,5 @@
     <string name="no">NO</string>
     <string name="finish">FINISH</string>
     <string name="sign_out">Sign out</string>
+    <string name="scoredetails_load">Could not load attempts</string>
 </resources>

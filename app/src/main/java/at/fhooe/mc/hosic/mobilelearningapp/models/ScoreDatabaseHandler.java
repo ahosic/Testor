@@ -7,6 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+
 import at.fhooe.mc.hosic.mobilelearningapp.TestorApplication;
 
 /**
@@ -20,7 +24,7 @@ public class ScoreDatabaseHandler extends SQLiteOpenHelper {
 
     private static final String TAG = "ScoreDatabaseHandler";
     // Database
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 4;
     private static final String DATABASE_NAME = "testorQuizzes";
     // Scores: Table Name
     private static final String TABLE_SCORES = "scores";
@@ -30,6 +34,7 @@ public class ScoreDatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_USER_ID = "userid";
     private static final String KEY_QUIZ_ID = "quizid";
     private static final String KEY_GRADE = "grade";
+    private static final String KEY_DATETIME = "datetime";
     private static ScoreDatabaseHandler instance = null;
 
     protected ScoreDatabaseHandler(Context context) {
@@ -64,7 +69,8 @@ public class ScoreDatabaseHandler extends SQLiteOpenHelper {
                         + KEY_ATTEMPT_ID + " INTEGER, "
                         + KEY_USER_ID + " INTEGER, "
                         + KEY_QUIZ_ID + " INTEGER, "
-                        + KEY_GRADE + " REAL)";
+                        + KEY_GRADE + " REAL, "
+                        + KEY_DATETIME + " INTEGER)";
 
         // Create table
         _db.execSQL(create_scores_table);
@@ -101,24 +107,71 @@ public class ScoreDatabaseHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
+        long millis = _score.getDateTime().getTime();
+
         ContentValues vals = new ContentValues();
         vals.put(KEY_ATTEMPT_ID, _score.getAttemptID());
         vals.put(KEY_USER_ID, _score.getUserID());
         vals.put(KEY_QUIZ_ID, _score.getQuizID());
         vals.put(KEY_GRADE, _score.getGrade());
+        vals.put(KEY_DATETIME, _score.getDateTime().getTime());
 
         db.insert(TABLE_SCORES, null, vals);
     }
 
     /**
-     * Gets the highest score of a quiz attempt of a user.
+     * Gets all scores for a quiz.
+     *
+     * @param _quizid ID of the quiz
+     * @param _userid ID of the user
+     * @return A list of all scores of a quiz
+     */
+    public List<Score> getScoresForQuiz(int _quizid, int _userid) {
+        Log.i(TAG, "Get scores for quiz " + _quizid + " and user " + _userid);
+
+        LinkedList<Score> scores = new LinkedList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // SQL statement
+        String get_scores =
+                "SELECT * "
+                        + "FROM " + TABLE_SCORES + " WHERE "
+                        + KEY_QUIZ_ID + " = " + _quizid + " AND "
+                        + KEY_USER_ID + " = " + _userid;
+
+        // Build object
+        Cursor cursor = db.rawQuery(get_scores, null);
+        if (cursor.moveToFirst()) {
+
+            do {
+
+                Score score = new Score(
+                        cursor.getInt(0),
+                        cursor.getInt(1),
+                        cursor.getInt(2),
+                        cursor.getInt(3),
+                        cursor.getDouble(4),
+                        new Date(cursor.getLong(5)));
+
+                scores.add(score);
+            } while (cursor.moveToNext());
+
+
+            cursor.close();
+        }
+
+        return scores;
+    }
+
+    /**
+     * Gets the highest score of a user for a quiz.
      *
      * @param _quizid ID of the quiz
      * @param _userid ID of the user
      * @return Highest score
      */
-    public Score getScoreForQuiz(int _quizid, int _userid) {
-        Log.i(TAG, "Get score for quiz " + _quizid + " and user " + _userid);
+    public Score getHighscoreForQuiz(int _quizid, int _userid) {
+        Log.i(TAG, "Get highscore for quiz " + _quizid + " and user " + _userid);
 
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -129,7 +182,8 @@ public class ScoreDatabaseHandler extends SQLiteOpenHelper {
                         + KEY_ATTEMPT_ID + ", "
                         + KEY_USER_ID + ", "
                         + KEY_QUIZ_ID + ", "
-                        + "MAX(" + KEY_GRADE + ") "
+                        + "MAX(" + KEY_GRADE + "), "
+                        + KEY_DATETIME + " "
                         + "FROM " + TABLE_SCORES + " WHERE "
                         + KEY_QUIZ_ID + " = " + _quizid + " AND "
                         + KEY_USER_ID + " = " + _userid;
@@ -144,7 +198,8 @@ public class ScoreDatabaseHandler extends SQLiteOpenHelper {
                     cursor.getInt(1),
                     cursor.getInt(2),
                     cursor.getInt(3),
-                    cursor.getDouble(4));
+                    cursor.getDouble(4),
+                    new Date(cursor.getInt(5)));
 
             cursor.close();
 
