@@ -259,6 +259,13 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
                 mCurrentFragment = trueFalseFrag;
                 transaction.replace(R.id.answerContainer, trueFalseFrag, "trueFalseFragment");
                 break;
+            case "numerical":
+                Log.i(TAG, "Loading numerical fragment");
+
+                NumericalQuestionFragment numericalFrag = new NumericalQuestionFragment();
+                mCurrentFragment = numericalFrag;
+                transaction.replace(R.id.answerContainer, numericalFrag, "numericalFragment");
+                break;
             default:
                 Log.i(TAG, "Not supported question type.");
                 Toast.makeText(TestorApplication.getContext(), R.string.question_not_supported, Toast.LENGTH_SHORT).show();
