@@ -7,10 +7,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -26,6 +26,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.ModelChangedMessage;
+import at.fhooe.mc.hosic.mobilelearningapp.helpers.MoodleAnswerType;
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.MoodleHTMLParser;
 import at.fhooe.mc.hosic.mobilelearningapp.models.QuizModel;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.AttemptDataDTO;
@@ -44,14 +45,6 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
 
     private BottomNavigationView mBottomNavigationView;
     private AutofitTextView mQuestion;
-    private CardView mCardA;
-    private CardView mCardB;
-    private CardView mCardC;
-    private CardView mCardD;
-    private AutofitTextView mAnswerA;
-    private AutofitTextView mAnswerB;
-    private AutofitTextView mAnswerC;
-    private AutofitTextView mAnswerD;
 
     private View mReviewLayout;
     private AlertDialog mReviewDialog;
@@ -59,7 +52,6 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
     private TextView mReviewQuizTitle;
     private TextView mReviewDescription;
 
-    private int mSelected = -1;
     private boolean mStarted;
     private boolean mFinished = false;
 
@@ -71,6 +63,8 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
     private int mSequenceCheck;
     private int mQuestionNumber;
     private int mSlot;
+
+    private MoodleAnswerType mCurrentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,16 +78,9 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
         mReviewQuizTitle = (TextView) mReviewLayout.findViewById(R.id.review_quiz_title);
         mReviewDescription = (TextView) mReviewLayout.findViewById(R.id.review_quiz_description);
 
-        // Initialize Views
-        mCardA = (CardView) findViewById(R.id.quiz_card_A);
-        mCardB = (CardView) findViewById(R.id.quiz_card_B);
-        mCardC = (CardView) findViewById(R.id.quiz_card_C);
-        mCardD = (CardView) findViewById(R.id.quiz_card_D);
+        // Initialize Question View
         mQuestion = (AutofitTextView) findViewById(R.id.question);
-        mAnswerA = (AutofitTextView) findViewById(R.id.answerA);
-        mAnswerB = (AutofitTextView) findViewById(R.id.answerB);
-        mAnswerC = (AutofitTextView) findViewById(R.id.answerC);
-        mAnswerD = (AutofitTextView) findViewById(R.id.answerD);
+
         mBottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         mBottomNavigationView.setOnNavigationItemSelectedListener(this);
 
@@ -133,10 +120,6 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
      * @param _savedInstanceState Bundle, where data is saved.
      */
     private void restoreData(Bundle _savedInstanceState) {
-        // Restore selection
-        mSelected = _savedInstanceState.getInt("selected");
-        selectAnswer();
-
         // Restore member variables
         mFinished = _savedInstanceState.getBoolean("finished");
         mStarted = _savedInstanceState.getBoolean("started");
@@ -159,7 +142,6 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
         super.onSaveInstanceState(outState);
 
         outState.putBoolean("finished", mFinished);
-        outState.putInt("selected", mSelected);
         outState.putBoolean("started", mStarted);
         outState.putInt("quizid", mQuizID);
 
@@ -215,63 +197,6 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
         return true;
     }
 
-    /**
-     * Selects the clicked answer.
-     *
-     * @param _view The clicked view.
-     */
-    public void onClickAnswer(View _view) {
-        mSelected = Integer.parseInt((String) _view.getTag());
-        Log.i(TAG, "Answer " + mSelected + " selected");
-
-        selectAnswer();
-    }
-
-    /**
-     * Selects a specific answer and changes the background and text color.
-     */
-    private void selectAnswer() {
-        Log.i(TAG, "Select Answer");
-
-        unselectAll();
-
-        // Change Background and Text Color of selected answer
-        switch (mSelected) {
-            case 0:
-                mCardA.setCardBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
-                mAnswerA.setTextColor(ContextCompat.getColor(this, R.color.plainWhite));
-                break;
-            case 1:
-                mCardB.setCardBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
-                mAnswerB.setTextColor(ContextCompat.getColor(this, R.color.plainWhite));
-                break;
-            case 2:
-                mCardC.setCardBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
-                mAnswerC.setTextColor(ContextCompat.getColor(this, R.color.plainWhite));
-                break;
-            case 3:
-                mCardD.setCardBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
-                mAnswerD.setTextColor(ContextCompat.getColor(this, R.color.plainWhite));
-                break;
-        }
-    }
-
-    /**
-     * Unselects all answers.
-     */
-    private void unselectAll() {
-        Log.i(TAG, "Unselected all");
-
-        mCardA.setCardBackgroundColor(ContextCompat.getColor(this, R.color.plainWhite));
-        mCardB.setCardBackgroundColor(ContextCompat.getColor(this, R.color.plainWhite));
-        mCardC.setCardBackgroundColor(ContextCompat.getColor(this, R.color.plainWhite));
-        mCardD.setCardBackgroundColor(ContextCompat.getColor(this, R.color.plainWhite));
-
-        mAnswerA.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-        mAnswerB.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-        mAnswerC.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-        mAnswerD.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-    }
 
     /**
      * Requests the quiz data from the QuizModel.
@@ -303,7 +228,7 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
     private void processData(AttemptDataDTO _data) {
         QuestionDTO q = _data.getQuestions()[0];
 
-        // Set QuizDTO variables
+        // Set Quiz variables
         mCurrentPage = _data.getAttempt().getCurrentPage();
         mNextPage = _data.getNextPage();
         mSequenceCheck = q.getSequencecheck();
@@ -311,17 +236,39 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
         mQuestionNumber = q.getQuestionNumber();
 
         MoodleHTMLParser parser = new MoodleHTMLParser(q.getHTML());
+
+        // Set question text
         String qText = parser.getQuestion();
-        String[] answers = parser.getAnswers(mAttemptID, mQuestionNumber);
-
-        // Set values
         mQuestion.setText(qText);
-        mAnswerA.setText(answers[0]);
-        mAnswerB.setText(answers[1]);
-        mAnswerC.setText(answers[2]);
-        mAnswerD.setText(answers[3]);
 
-        unselectAll();
+        // TODO: Add here other question types
+        // Set fragment based on question type
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        switch (q.getQuestionType()) {
+            case "multichoice":
+                Log.i(TAG, "Loading multichoice fragment");
+
+                MultipleChoiceQuestionFragment frag = new MultipleChoiceQuestionFragment();
+                mCurrentFragment = frag;
+                transaction.replace(R.id.answerContainer, frag, "multichoiceFragment");
+                break;
+            default:
+                Log.i(TAG, "Not supported question type.");
+                Toast.makeText(TestorApplication.getContext(), R.string.question_not_supported, Toast.LENGTH_SHORT).show();
+
+                // Go back to MainActivity
+                this.onBackPressed();
+                return;
+        }
+
+        // End replacing transaction
+        transaction.commit();
+        getSupportFragmentManager().executePendingTransactions();
+
+        // Set answers
+        mCurrentFragment.setAnswers(q, mAttemptID);
+
+        // Close Progress dialog
         mProgressDialog.hide();
     }
 
@@ -329,9 +276,10 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
      * Saves the selected Answer.
      */
     private void saveData() {
-        if (mSelected != -1) {
-            // Save AttemptInfoDTO Data
-            QuizModel.getInstance().saveAttemptData(mAttemptID, mQuestionNumber, mSelected, mSequenceCheck);
+        if (mCurrentFragment.isAnswerSelected()) {
+            // Get selected answer and save data
+            String[] answer = mCurrentFragment.getSelectedAnswer();
+            QuizModel.getInstance().saveAttemptData(mAttemptID, mQuestionNumber, answer, mSequenceCheck);
         } else {
             // Show info
             AlertDialog.Builder builder = new AlertDialog.Builder(this);

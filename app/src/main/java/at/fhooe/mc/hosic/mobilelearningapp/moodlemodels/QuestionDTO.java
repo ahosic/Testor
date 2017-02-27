@@ -11,6 +11,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class QuestionDTO {
 
+    @SerializedName("type")
+    private String mQuestionType;
+
     @SerializedName("slot")
     private int mSlot;
 
@@ -23,11 +26,20 @@ public class QuestionDTO {
     @SerializedName("sequencecheck")
     private int mSequencecheck;
 
-    public QuestionDTO(int _slot, int _questionNumber, String _html, int _sequencecheck) {
+    public QuestionDTO(String _questionType, int _slot, int _questionNumber, String _html, int _sequencecheck) {
+        mQuestionType = _questionType;
         mSlot = _slot;
         mQuestionNumber = _questionNumber;
         mHTML = _html;
         mSequencecheck = _sequencecheck;
+    }
+
+    public String getQuestionType() {
+        return mQuestionType;
+    }
+
+    public void setQuestionType(String _questionType) {
+        mQuestionType = _questionType;
     }
 
     public int getSlot() {

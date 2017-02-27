@@ -32,13 +32,13 @@ public class MoodleHTMLParser {
     }
 
     /**
-     * Extracts the answers out of the HTML provided by Moodle.
+     * Extracts the answers of a Multiple Choice-Question out of the HTML provided by Moodle.
      *
      * @param _attemptID  The ID of the quiz attempt
      * @param _questionNo The number of the question
-     * @return
+     * @return A String array containing all answers.
      */
-    public String[] getAnswers(int _attemptID, int _questionNo) {
+    public String[] getMultiChoiceAnswers(int _attemptID, int _questionNo) {
         Document doc = Jsoup.parse(mHTML);
 
         StringBuilder builder = new StringBuilder();

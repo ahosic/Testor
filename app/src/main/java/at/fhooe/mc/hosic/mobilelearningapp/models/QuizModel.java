@@ -435,10 +435,10 @@ public class QuizModel extends BaseModel {
      *
      * @param _attemptID ID of quiz attempt
      * @param _qno       Number of question
-     * @param _ano       Number of answer
+     * @param _answer    Array of key and value of the selected answer
      * @param _sCheck    Sequence Check Number of question
      */
-    public void saveAttemptData(final int _attemptID, int _qno, int _ano, int _sCheck) {
+    public void saveAttemptData(final int _attemptID, int _qno, String[] _answer, int _sCheck) {
         // Define parameters
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("wstoken", AuthenticationModel.getInstance().getToken().getToken());
@@ -449,14 +449,14 @@ public class QuizModel extends BaseModel {
         String url = encodeURLWithParams(BASE_URL, params);
 
         String sCheckName = "q" + (_attemptID + 1) + ":" + _qno + "_:sequencecheck";
-        String ansName = "q" + (_attemptID + 1) + ":" + _qno + "_answer";
+        //String ansName = "q" + (_attemptID + 1) + ":" + _qno + "_answer";
 
         HashMap<String, String> bodyParams = new HashMap<String, String>();
         bodyParams.put("attemptid", "" + _attemptID);
         bodyParams.put("data[0][name]", sCheckName);
         bodyParams.put("data[0][value]", "" + _sCheck);
-        bodyParams.put("data[1][name]", ansName);
-        bodyParams.put("data[1][value]", "" + _ano);
+        bodyParams.put("data[1][name]", _answer[0]);
+        bodyParams.put("data[1][value]", _answer[1]);
         bodyParams.put("data[2][name]", "attempt");
         bodyParams.put("data[2][value]", "" + _attemptID);
 
