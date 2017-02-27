@@ -1,5 +1,6 @@
 package at.fhooe.mc.hosic.mobilelearningapp;
 
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -8,57 +9,48 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.MoodleAnswerType;
-import at.fhooe.mc.hosic.mobilelearningapp.helpers.MoodleHTMLParser;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuestionDTO;
-import me.grantland.widget.AutofitTextView;
 
 
 /**
- * Displays multiple choice answers for a quiz.
+ * Displays true/false answers for a quiz.
  *
  * @author Almin Hosic
  * @version 1.0
  */
-public class MultipleChoiceQuestionFragment extends Fragment implements MoodleAnswerType, View.OnClickListener {
+public class TrueFalseQuestionFragment extends Fragment implements MoodleAnswerType, View.OnClickListener {
 
-    private static final String TAG = "MultipleChoiceFragment";
+    private static final String TAG = "TrueFalseFragment";
 
     private CardView mCardA;
     private CardView mCardB;
-    private CardView mCardC;
-    private CardView mCardD;
-    private AutofitTextView mAnswerA;
-    private AutofitTextView mAnswerB;
-    private AutofitTextView mAnswerC;
-    private AutofitTextView mAnswerD;
+    private TextView mAnswerA;
+    private TextView mAnswerB;
 
     private int mSelected = -1;
     private int mAttemptID;
     private int mQuestionNumber;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView");
 
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_multiple_choice_question, container, false);
+        View view = inflater.inflate(R.layout.fragment_true_false_question, container, false);
 
+        // Initialize views
         mCardA = (CardView) view.findViewById(R.id.quiz_card_A);
         mCardB = (CardView) view.findViewById(R.id.quiz_card_B);
-        mCardC = (CardView) view.findViewById(R.id.quiz_card_C);
-        mCardD = (CardView) view.findViewById(R.id.quiz_card_D);
+        mAnswerA = (TextView) view.findViewById(R.id.answerA);
+        mAnswerB = (TextView) view.findViewById(R.id.answerB);
 
-        mAnswerA = (AutofitTextView) view.findViewById(R.id.answerA);
-        mAnswerB = (AutofitTextView) view.findViewById(R.id.answerB);
-        mAnswerC = (AutofitTextView) view.findViewById(R.id.answerC);
-        mAnswerD = (AutofitTextView) view.findViewById(R.id.answerD);
-
+        // Set Click Listeners
         mCardA.setOnClickListener(this);
         mCardB.setOnClickListener(this);
-        mCardC.setOnClickListener(this);
-        mCardD.setOnClickListener(this);
 
         if (savedInstanceState != null) {
             mSelected = savedInstanceState.getInt("selected");
@@ -87,6 +79,19 @@ public class MultipleChoiceQuestionFragment extends Fragment implements MoodleAn
     }
 
     /**
+     * Gets invoked, when a user clicks on an answer
+     *
+     * @param _view The clicked view
+     */
+    @Override
+    public void onClick(View _view) {
+        mSelected = Integer.parseInt((String) _view.getTag());
+        Log.i(TAG, "Answer " + mSelected + " selected");
+
+        selectAnswer();
+    }
+
+    /**
      * Unselects all answers.
      */
     private void unselectAll() {
@@ -94,13 +99,9 @@ public class MultipleChoiceQuestionFragment extends Fragment implements MoodleAn
 
         mCardA.setCardBackgroundColor(ContextCompat.getColor(TestorApplication.getContext(), R.color.plainWhite));
         mCardB.setCardBackgroundColor(ContextCompat.getColor(TestorApplication.getContext(), R.color.plainWhite));
-        mCardC.setCardBackgroundColor(ContextCompat.getColor(TestorApplication.getContext(), R.color.plainWhite));
-        mCardD.setCardBackgroundColor(ContextCompat.getColor(TestorApplication.getContext(), R.color.plainWhite));
 
         mAnswerA.setTextColor(ContextCompat.getColor(TestorApplication.getContext(), R.color.colorPrimary));
         mAnswerB.setTextColor(ContextCompat.getColor(TestorApplication.getContext(), R.color.colorPrimary));
-        mAnswerC.setTextColor(ContextCompat.getColor(TestorApplication.getContext(), R.color.colorPrimary));
-        mAnswerD.setTextColor(ContextCompat.getColor(TestorApplication.getContext(), R.color.colorPrimary));
     }
 
     /**
@@ -114,20 +115,12 @@ public class MultipleChoiceQuestionFragment extends Fragment implements MoodleAn
         // Change Background and Text Color of selected answer
         switch (mSelected) {
             case 0:
-                mCardA.setCardBackgroundColor(ContextCompat.getColor(TestorApplication.getContext(), R.color.colorPrimary));
-                mAnswerA.setTextColor(ContextCompat.getColor(TestorApplication.getContext(), R.color.plainWhite));
-                break;
-            case 1:
                 mCardB.setCardBackgroundColor(ContextCompat.getColor(TestorApplication.getContext(), R.color.colorPrimary));
                 mAnswerB.setTextColor(ContextCompat.getColor(TestorApplication.getContext(), R.color.plainWhite));
                 break;
-            case 2:
-                mCardC.setCardBackgroundColor(ContextCompat.getColor(TestorApplication.getContext(), R.color.colorPrimary));
-                mAnswerC.setTextColor(ContextCompat.getColor(TestorApplication.getContext(), R.color.plainWhite));
-                break;
-            case 3:
-                mCardD.setCardBackgroundColor(ContextCompat.getColor(TestorApplication.getContext(), R.color.colorPrimary));
-                mAnswerD.setTextColor(ContextCompat.getColor(TestorApplication.getContext(), R.color.plainWhite));
+            case 1:
+                mCardA.setCardBackgroundColor(ContextCompat.getColor(TestorApplication.getContext(), R.color.colorPrimary));
+                mAnswerA.setTextColor(ContextCompat.getColor(TestorApplication.getContext(), R.color.plainWhite));
                 break;
         }
     }
@@ -144,15 +137,6 @@ public class MultipleChoiceQuestionFragment extends Fragment implements MoodleAn
 
         mAttemptID = _attemptID;
         mQuestionNumber = _question.getQuestionNumber();
-
-        MoodleHTMLParser parser = new MoodleHTMLParser(_question.getHTML());
-        String[] answers = parser.getMultiChoiceAnswers(mAttemptID, mQuestionNumber);
-
-        // Set values
-        mAnswerA.setText(answers[0]);
-        mAnswerB.setText(answers[1]);
-        mAnswerC.setText(answers[2]);
-        mAnswerD.setText(answers[3]);
 
         unselectAll();
     }
@@ -180,18 +164,5 @@ public class MultipleChoiceQuestionFragment extends Fragment implements MoodleAn
     @Override
     public boolean isAnswerSelected() {
         return mSelected != -1;
-    }
-
-    /**
-     * Gets invoked, when a user clicks on an answer
-     *
-     * @param _view The clicked view
-     */
-    @Override
-    public void onClick(View _view) {
-        mSelected = Integer.parseInt((String) _view.getTag());
-        Log.i(TAG, "Answer " + mSelected + " selected");
-
-        selectAnswer();
     }
 }

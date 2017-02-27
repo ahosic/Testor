@@ -248,9 +248,16 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
             case "multichoice":
                 Log.i(TAG, "Loading multichoice fragment");
 
-                MultipleChoiceQuestionFragment frag = new MultipleChoiceQuestionFragment();
-                mCurrentFragment = frag;
-                transaction.replace(R.id.answerContainer, frag, "multichoiceFragment");
+                MultipleChoiceQuestionFragment multiChoiceFrag = new MultipleChoiceQuestionFragment();
+                mCurrentFragment = multiChoiceFrag;
+                transaction.replace(R.id.answerContainer, multiChoiceFrag, "multichoiceFragment");
+                break;
+            case "truefalse":
+                Log.i(TAG, "Loading true/false fragment");
+
+                TrueFalseQuestionFragment trueFalseFrag = new TrueFalseQuestionFragment();
+                mCurrentFragment = trueFalseFrag;
+                transaction.replace(R.id.answerContainer, trueFalseFrag, "trueFalseFragment");
                 break;
             default:
                 Log.i(TAG, "Not supported question type.");
