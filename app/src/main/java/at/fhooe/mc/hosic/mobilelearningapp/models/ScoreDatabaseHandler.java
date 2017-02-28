@@ -24,7 +24,7 @@ public class ScoreDatabaseHandler extends SQLiteOpenHelper {
 
     private static final String TAG = "ScoreDatabaseHandler";
     // Database
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     private static final String DATABASE_NAME = "testorQuizzes";
     // Scores: Table Name
     private static final String TABLE_SCORES = "scores";

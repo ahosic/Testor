@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.HashMap;
+
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.MoodleAnswerType;
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuestionDTO;
 
@@ -144,14 +146,17 @@ public class TrueFalseQuestionFragment extends Fragment implements MoodleAnswerT
     /**
      * Gets the answer that has been selected by the user.
      *
-     * @return A String array containing a key and the value used for transmitting to the Moodle server.
+     * @return A Hashmap containing a key and the value used for transmitting to the Moodle server.
      */
     @Override
-    public String[] getSelectedAnswer() {
+    public HashMap<String, String> getSelectedAnswer() {
         Log.i(TAG, "getSelectedAnswer");
 
         String ansName = "q" + (mAttemptID + 1) + ":" + mQuestionNumber + "_answer";
-        String[] answer = new String[]{ansName, String.valueOf(mSelected)};
+
+        // Add selection
+        HashMap<String, String> answer = new HashMap<String, String>();
+        answer.put(ansName, String.valueOf(mSelected));
 
         return answer;
     }

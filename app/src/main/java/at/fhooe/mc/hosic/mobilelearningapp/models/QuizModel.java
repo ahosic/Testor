@@ -13,8 +13,10 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import at.fhooe.mc.hosic.mobilelearningapp.TestorApplication;
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.GsonRequest;
@@ -438,7 +440,7 @@ public class QuizModel extends BaseModel {
      * @param _answer    Array of key and value of the selected answer
      * @param _sCheck    Sequence Check Number of question
      */
-    public void saveAttemptData(final int _attemptID, int _qno, String[] _answer, int _sCheck) {
+    public void saveAttemptData(final int _attemptID, int _qno, HashMap<String, String> _answer, int _sCheck) {
         // Define parameters
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("wstoken", AuthenticationModel.getInstance().getToken().getToken());
@@ -449,16 +451,26 @@ public class QuizModel extends BaseModel {
         String url = encodeURLWithParams(BASE_URL, params);
 
         String sCheckName = "q" + (_attemptID + 1) + ":" + _qno + "_:sequencecheck";
-        //String ansName = "q" + (_attemptID + 1) + ":" + _qno + "_answer";
 
         HashMap<String, String> bodyParams = new HashMap<String, String>();
         bodyParams.put("attemptid", "" + _attemptID);
         bodyParams.put("data[0][name]", sCheckName);
         bodyParams.put("data[0][value]", "" + _sCheck);
-        bodyParams.put("data[1][name]", _answer[0]);
-        bodyParams.put("data[1][value]", _answer[1]);
-        bodyParams.put("data[2][name]", "attempt");
-        bodyParams.put("data[2][value]", "" + _attemptID);
+        bodyParams.put("data[1][name]", "attempt");
+        bodyParams.put("data[1][value]", "" + _attemptID);
+
+        // Add answers
+        Iterator it = _answer.entrySet().iterator();
+        int idx = 2;
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry) it.next();
+
+            bodyParams.put("data[" + idx + "][name]", String.valueOf(pair.getKey()));
+            bodyParams.put("data[" + idx + "][value]", String.valueOf(pair.getValue()));
+
+            idx++;
+            it.remove();
+        }
 
         // Build request
         GsonRequest<SaveDataResponseDTO> request = new GsonRequest<>(Request.Method.POST, url, SaveDataResponseDTO.class, bodyParams, new Response.Listener<SaveDataResponseDTO>() {

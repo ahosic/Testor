@@ -32,8 +32,6 @@
     <string name="finish">FINISH</string>
     <string name="sign_out">Sign out</string>
     <string name="scoredetails_load">Could not load attempts</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="question_not_supported">Question not supported</string>
+    <string name="choose_spinner">Choose …</string>
 </resources>

@@ -1,5 +1,7 @@
 package at.fhooe.mc.hosic.mobilelearningapp.helpers;
 
+import java.util.HashMap;
+
 import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.QuestionDTO;
 
 /**
@@ -22,9 +24,9 @@ public interface MoodleAnswerType {
     /**
      * Gets the answer that has been selected by the user.
      *
-     * @return A String array containing a key and the value used for transmitting to the Moodle server.
+     * @return A Hashmap containing a key and the value both used for transmitting to the Moodle server.
      */
-    String[] getSelectedAnswer();
+    HashMap<String, String> getSelectedAnswer();
 
     /**
      * Checks, whether the user has selected an answer, or not.

@@ -131,6 +131,7 @@ public class QuizzesFragment extends Fragment implements Observer, RecyclerViewC
         Intent intent = new Intent(getActivity(), QuizActivity.class);
         intent.putExtra("quizid", q.getID());
         intent.putExtra("started", false);
+        intent.putExtra("quizname", q.getName());
         getActivity().startActivity(intent);
     }
 }

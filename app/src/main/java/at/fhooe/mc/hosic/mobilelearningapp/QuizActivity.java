@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -56,6 +57,7 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
     private boolean mFinished = false;
 
     // QuizDTO data
+    private String mQuizName;
     private int mQuizID;
     private int mAttemptID;
     private int mCurrentPage;
@@ -95,6 +97,7 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
         if (i != null) {
             mQuizID = i.getIntExtra("quizid", -1);
             mStarted = i.getBooleanExtra("started", false);
+            mQuizName = i.getStringExtra("quizname");
         }
 
         // Check, if there are saved states
@@ -103,6 +106,13 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
         } else {
             // Register observer
             QuizModel.getInstance().addObserver(this);
+        }
+
+        // Set title of the activity
+        if (mQuizName != null && !mQuizName.isEmpty()) {
+            setTitle(mQuizName);
+        } else {
+            setTitle("Testor");
         }
 
         if (!mStarted) {
@@ -121,6 +131,7 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
      */
     private void restoreData(Bundle _savedInstanceState) {
         // Restore member variables
+        mQuizName = _savedInstanceState.getString("quizname");
         mFinished = _savedInstanceState.getBoolean("finished");
         mStarted = _savedInstanceState.getBoolean("started");
         mQuizID = _savedInstanceState.getInt("quizid");
@@ -141,6 +152,7 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
+        outState.putString("quizname", mQuizName);
         outState.putBoolean("finished", mFinished);
         outState.putBoolean("started", mStarted);
         outState.putInt("quizid", mQuizID);
@@ -266,6 +278,14 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
                 mCurrentFragment = numericalFrag;
                 transaction.replace(R.id.answerContainer, numericalFrag, "numericalFragment");
                 break;
+            case "match":
+                Log.i(TAG, "Loading matching fragment");
+
+                MatchingQuestionFragment matchingFrag = new MatchingQuestionFragment();
+                mCurrentFragment = matchingFrag;
+                transaction.replace(R.id.answerContainer, matchingFrag, "matchingFragment");
+
+                break;
             default:
                 Log.i(TAG, "Not supported question type.");
                 Toast.makeText(TestorApplication.getContext(), R.string.question_not_supported, Toast.LENGTH_SHORT).show();
@@ -292,7 +312,7 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
     private void saveData() {
         if (mCurrentFragment.isAnswerSelected()) {
             // Get selected answer and save data
-            String[] answer = mCurrentFragment.getSelectedAnswer();
+            HashMap<String, String> answer = mCurrentFragment.getSelectedAnswer();
             QuizModel.getInstance().saveAttemptData(mAttemptID, mQuestionNumber, answer, mSequenceCheck);
         } else {
             // Show info
