@@ -2,6 +2,9 @@ package at.fhooe.mc.hosic.mobilelearningapp.helpers;
 
 /**
  * A message that gets passed to all observers of an observable object on its property changes.
+ *
+ * @author Almin Hosic
+ * @version 1.0
  */
 
 public class ModelChangedMessage {

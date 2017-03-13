@@ -103,6 +103,11 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ScoreViewH
             container.setOnClickListener(this);
         }
 
+        /**
+         * Invoked, when the user taps on a score.
+         *
+         * @param _view The tapped score
+         */
         @Override
         public void onClick(View _view) {
             itemListener.recyclerViewListClicked(_view, this.getLayoutPosition());

@@ -14,6 +14,9 @@ import java.util.Map;
 
 /**
  * Implements a custom request type for requesting JSON data and converting them to a Java object.
+ *
+ * @author Almin Hosic
+ * @version 1.0
  */
 
 public class GsonRequest<T> extends Request<T> {

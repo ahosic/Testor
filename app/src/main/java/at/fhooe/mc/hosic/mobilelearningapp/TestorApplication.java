@@ -4,7 +4,10 @@ import android.app.Application;
 import android.content.Context;
 
 /**
- * Defines the context of the application
+ * Holds the context of the application.
+ *
+ * @author Almin Hosic
+ * @version 1.0
  */
 
 public class TestorApplication extends Application {

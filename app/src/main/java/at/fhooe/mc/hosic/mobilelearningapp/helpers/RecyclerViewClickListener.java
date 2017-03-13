@@ -17,5 +17,5 @@ public interface RecyclerViewClickListener {
      * @param _view     The clicked view
      * @param _position The position of the item in its list.
      */
-    public void recyclerViewListClicked(View _view, int _position);
+    void recyclerViewListClicked(View _view, int _position);
 }

@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  *
  * @author Almin Hosic
  * @version 1.0
- * */
+ */
 
 public class TokenDTO {
 

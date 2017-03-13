@@ -39,6 +39,12 @@ import at.grabner.circleprogress.CircleProgressView;
 import at.grabner.circleprogress.TextMode;
 import me.grantland.widget.AutofitTextView;
 
+/**
+ * Manages the process of a quiz attempt. Responsible for starting, processing, saving and finishing a quiz attempt.
+ *
+ * @author Almin Hosic
+ * @version 1.0
+ */
 public class QuizActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, Observer {
     private static final String TAG = "QuizActivity";
 

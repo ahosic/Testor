@@ -14,6 +14,12 @@ import android.view.MenuItem;
 import at.fhooe.mc.hosic.mobilelearningapp.models.AuthenticationModel;
 import at.fhooe.mc.hosic.mobilelearningapp.models.QuizModel;
 
+/**
+ * Main View of the App. Shows the Quizzes and Scores to the user.
+ *
+ * @author Almin Hosic
+ * @version 1.0
+ */
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
