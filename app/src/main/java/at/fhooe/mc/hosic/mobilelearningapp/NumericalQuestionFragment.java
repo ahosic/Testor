@@ -75,7 +75,7 @@ public class NumericalQuestionFragment extends Fragment implements MoodleAnswerT
         Log.i(TAG, "setAnswers");
 
         mAttemptID = _attemptID;
-        mQuestionNumber = _question.getQuestionNumber();
+        mQuestionNumber = _question.getSlot();
     }
 
     /**

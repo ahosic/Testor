@@ -245,7 +245,7 @@ public class QuizActivity extends AppCompatActivity implements BottomNavigationV
         mNextPage = _data.getNextPage();
         mSequenceCheck = q.getSequencecheck();
         mSlot = q.getSlot();
-        mQuestionNumber = q.getQuestionNumber();
+        mQuestionNumber = q.getSlot();
 
         MoodleHTMLParser parser = new MoodleHTMLParser(q.getHTML());
 

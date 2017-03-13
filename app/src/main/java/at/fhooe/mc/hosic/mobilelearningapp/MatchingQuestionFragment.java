@@ -101,7 +101,7 @@ public class MatchingQuestionFragment extends Fragment implements MoodleAnswerTy
 
         // Set question attempt values
         mAttemptID = _attemptID;
-        mQuestionNumber = _question.getQuestionNumber();
+        mQuestionNumber = _question.getSlot();
 
         // Get data
         MoodleHTMLParser parser = new MoodleHTMLParser(_question.getHTML());

@@ -34,4 +34,6 @@
     <string name="scoredetails_load">Could not load attempts</string>
     <string name="question_not_supported">Question not supported</string>
     <string name="choose_spinner">Choose …</string>
+    <string name="login_failed_message">Please check your username and password.</string>
+    <string name="login_failed_title">Authentication failed</string>
 </resources>

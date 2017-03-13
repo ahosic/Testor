@@ -1,20 +1,24 @@
 package at.fhooe.mc.hosic.mobilelearningapp;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import java.util.Observable;
 import java.util.Observer;
 
 import at.fhooe.mc.hosic.mobilelearningapp.helpers.ModelChangedMessage;
 import at.fhooe.mc.hosic.mobilelearningapp.models.AuthenticationModel;
-import at.fhooe.mc.hosic.mobilelearningapp.moodlemodels.TokenDTO;
 
 /**
  * Manages the Login procedure.
@@ -90,9 +94,6 @@ public class LoginActivity extends AppCompatActivity implements Observer {
                         mProgressDialog.hide();
                     }
 
-                    TokenDTO token = (TokenDTO) msg.getArgs();
-                    Toast.makeText(getApplicationContext(), "" + token.getToken(), Toast.LENGTH_SHORT).show();
-
                     // Go to MainActivity
                     Intent intent = new Intent(this, MainActivity.class);
                     startActivity(intent);
@@ -105,7 +106,29 @@ public class LoginActivity extends AppCompatActivity implements Observer {
                         mProgressDialog.hide();
                     }
 
-                    Toast.makeText(getApplicationContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
+                    // Show info
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                    builder.setMessage(R.string.login_failed_message).setTitle(R.string.login_failed_title);
+                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    final AlertDialog alertDialog = builder.create();
+                    alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                        @Override
+                        public void onShow(DialogInterface dialog) {
+                            Button btnPositive = alertDialog.getButton(Dialog.BUTTON_POSITIVE);
+
+                            btnPositive.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+                            btnPositive.setTextColor(ContextCompat.getColor(TestorApplication.getContext(), R.color.colorPrimary));
+                        }
+                    });
+
+                    alertDialog.setCancelable(false);
+                    alertDialog.show();
 
                     break;
             }

@@ -145,7 +145,7 @@ public class MultipleChoiceQuestionFragment extends Fragment implements MoodleAn
         Log.i(TAG, "setAnswers");
 
         mAttemptID = _attemptID;
-        mQuestionNumber = _question.getQuestionNumber();
+        mQuestionNumber = _question.getSlot();
 
         MoodleHTMLParser parser = new MoodleHTMLParser(_question.getHTML());
         String[] answers = parser.getMultiChoiceAnswers(mAttemptID, mQuestionNumber);
