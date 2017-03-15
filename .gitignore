@@ -33,7 +33,7 @@ proguard/
 captures/
 
 # Intellij
-*.iml
+#*.iml
 .idea/workspace.xml
 .idea/libraries
 
@@ -43,7 +43,7 @@ captures/
 # Other
 .DS_Store
 .externalNativeBuild
-.idea/
+#.idea/
 gradle.properties
 gradle/
 gradlew
