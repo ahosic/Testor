@@ -33,9 +33,9 @@ proguard/
 captures/
 
 # Intellij
-*.iml
-.idea/workspace.xml
-.idea/libraries
+#*.iml
+#.idea/workspace.xml
+#.idea/libraries
 
 # Keystore files
 *.jks
@@ -43,7 +43,7 @@ captures/
 # Other
 .DS_Store
 .externalNativeBuild
-.idea/
+#.idea/
 gradle.properties
 gradle/
 gradlew
